@@ -30,7 +30,7 @@ public class UserController {
 
 	// Get a Single User
 	@GetMapping("/get-user/{userId}")
-	public GeneralResponse getAllUser(@PathVariable Long userId) {
+	public GeneralResponse getUser(@PathVariable Long userId) {
 		this.userService.getUser(userId);
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS);
 	}

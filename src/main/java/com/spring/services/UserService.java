@@ -20,7 +20,7 @@ public class UserService {
 	public List<UserBean> getAllUsers() {
 		final List<UserBean> userBeans = new ArrayList<>();
 		// return this.userRepository.findAll();
-		/* Sending only required filds and sorting them */
+		/* Sending only required filds and sorting them increasing order*/
 		for (final UserRecord ur : this.userRepository.findAll()) {
 			UserBean bean = new UserBean();
 			bean.appUserId = ur.id;
@@ -37,7 +37,7 @@ public class UserService {
 	public UserRecord getUser(Long userId) {
 		
 		UserRecord id = userRepository.findOne(userId);
-		Assert.notNull(id,"-----No User Found-----");
+		Assert.notNull(id,"No User found with the given userId");
 		return id;
 	}
 
@@ -54,7 +54,8 @@ public class UserService {
 	}
 
 	public String deleteUser(Long userId) {
-		final UserRecord user = this.userRepository.getOne(userId);
+		final UserRecord user = this.userRepository.findOne(userId);
+		Assert.notNull(user,"No User found with the given userId");
 		this.userRepository.delete(user);
 		return "User deleted successfully";
 	}
@@ -62,6 +63,7 @@ public class UserService {
 	public UserRecord updateUser(UserBean bean) {
 		UserRecord userRecord;
 		userRecord = this.userRepository.findOne(bean.appUserId);
+		Assert.notNull(userRecord,"No User found with the given userId");
 		userRecord.name = bean.name;
 		userRecord.email = bean.email;
 		userRecord.mobileNumber = bean.mobileNumber;
