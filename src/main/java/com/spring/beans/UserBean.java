@@ -1,5 +1,8 @@
 package com.spring.beans;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -15,4 +18,6 @@ public class UserBean {
 	public String mobileNumber;
 	
 	public String employeeId;
+	
+	public List<Object> userData = new ArrayList<>();
 }

@@ -31,8 +31,8 @@ public class UserController {
 	// Get a Single User
 	@GetMapping("/get-user/{userId}")
 	public GeneralResponse getUser(@PathVariable Long userId) {
-		this.userService.getUser(userId);
-		return new GeneralResponse(Constants.RESPONSE_SUCCESS);
+		
+		return new GeneralResponse(Constants.RESPONSE_SUCCESS,this.userService.getUser(userId));
 	}
 
 	// Get All Users
@@ -46,7 +46,7 @@ public class UserController {
 	public GeneralResponse deleteUser(@PathVariable Long userId) {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.deleteUser(userId));
 	}
-
+	// Update a User
 	@PostMapping("update-user")
 	public GeneralResponse updateUser(@RequestBody UserBean bean) {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.updateUser(bean));

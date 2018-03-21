@@ -36,11 +36,25 @@ public class UserService {
 
 	public UserRecord getUser(Long userId) {
 		
-		UserRecord id = userRepository.findOne(userId);
-		Assert.notNull(id,"No User found with the given userId");
-		return id;
+		UserRecord user = userRepository.findOne(userId);
+		Assert.notNull(user,"No User found with the given userId");
+		
+//		final UserBean bean= new UserBean();
+//		bean.userData.add(this.mapUserBeans(user));
+		return user;
 	}
-
+	
+	public UserBean mapUserBeans (UserRecord user){
+		
+		UserBean bean = new UserBean();
+		bean.name = user.name;
+		bean.email = user.email;
+		bean.appUserId = user.id;
+		bean.employeeId = user.employeeId;
+		bean.mobileNumber = user.mobileNumber;
+		return bean;
+		
+	}
 	public UserRecord addUser(UserBean bean) {
 		UserRecord user = new UserRecord();
 		user.name = bean.name;
