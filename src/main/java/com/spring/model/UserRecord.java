@@ -1,36 +1,29 @@
 package com.spring.model;
 
-import java.sql.Timestamp;
-
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
-import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
+@Table(uniqueConstraints = {
+		@UniqueConstraint(columnNames = {"email"}),
+		@UniqueConstraint(columnNames = {"mobileNumber"}),
+		@UniqueConstraint(columnNames = {"employeeId"})
+})
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(value = { "createdAt", "updatedAt" })
-public class UserRecord {
+public class UserRecord extends BaseEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public Long id;
 	@NotNull
 	public String name;
 	public String email;
 	public String mobileNumber;
 	public String employeeId;
-	@CreationTimestamp
-	public Timestamp createdAt;
-	@Version
-	public Timestamp updatedAt;
+	public Boolean isActive = Boolean.FALSE;
 
 }

@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonInclude(Include.NON_EMPTY)
 public class UserBean {
-	
+
 	public Long appUserId;
 
 	public String name;
@@ -16,8 +16,8 @@ public class UserBean {
 	public String email;
 
 	public String mobileNumber;
-	
+
 	public String employeeId;
-	
+
 	public List<Object> userData = new ArrayList<>();
 }
