@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.spring.beans.LanguageBean;
 import com.spring.beans.UserBean;
 import com.spring.repo.UserRepository;
 import com.spring.services.UserService;
@@ -51,5 +52,10 @@ public class UserController {
 	public GeneralResponse updateUser(@RequestBody UserBean bean) {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.updateUser(bean));
 	}
-
+	
+	// Create a User
+		@PostMapping("/add-language")
+		public GeneralResponse saveOrUpdateLanguage(@RequestBody LanguageBean bean) {
+			return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.saveOrUpdateLanguage(bean));
+		}
 }

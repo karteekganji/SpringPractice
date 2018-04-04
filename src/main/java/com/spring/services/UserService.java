@@ -7,15 +7,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import com.spring.beans.LanguageBean;
 import com.spring.beans.UserBean;
+import com.spring.model.Language;
 import com.spring.model.UserRecord;
+import com.spring.repo.LanguageRepository;
 import com.spring.repo.UserRepository;
 
 @Service
 public class UserService {
 
 	@Autowired
-	UserRepository userRepository;
+	private UserRepository userRepository;
+	
+	@Autowired
+	private LanguageRepository languageRepository;
 
 	public List<UserRecord> getAllUsers() {
 		final List<UserBean> userBeans = new ArrayList<>();
@@ -98,5 +104,25 @@ public class UserService {
 
 		return this.userRepository.save(userRecord);
 	}
+	
+	public Language saveOrUpdateLanguage(LanguageBean bean) {
+		Language language;
 
+		if (bean.languageId != null) {
+			language = this.languageRepository.findOne(bean.languageId);
+			Assert.notNull(language, "No Language found !!");
+			Assert.isNull(this.languageRepository.findByNameIgnoreCaseAndIdNot(bean.languageTitle, bean.languageId),
+					"Language already exists with the given name.");
+			language.name = bean.languageTitle;
+		} else {
+			language = new Language();
+			Assert.isNull(this.languageRepository.findByNameIgnoreCase(bean.languageTitle),
+					"Language already exists with the given name.");
+			language.name = bean.languageTitle;
+		}
+
+		return this.languageRepository.save(language);
+
+	}
+	
 }
