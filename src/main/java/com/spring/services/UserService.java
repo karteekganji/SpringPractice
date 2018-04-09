@@ -3,6 +3,7 @@ package com.spring.services;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tomcat.jni.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -10,9 +11,11 @@ import org.springframework.util.Assert;
 import com.spring.beans.LanguageBean;
 import com.spring.beans.UserBean;
 import com.spring.model.Language;
+import com.spring.model.UserLanguageInfo;
 import com.spring.model.UserRecord;
 import com.spring.repo.LanguageRepository;
 import com.spring.repo.UserRepository;
+import com.spring.repo.userLanguageInfoRepository;
 
 @Service
 public class UserService {
@@ -22,14 +25,16 @@ public class UserService {
 	
 	@Autowired
 	private LanguageRepository languageRepository;
-
+	
+	@Autowired
+	private userLanguageInfoRepository languageInfoRepository;
 	public List<UserRecord> getAllUsers() {
-		final List<UserBean> userBeans = new ArrayList<>();
-		 return this.userRepository.findByIsActiveTrue();
+		
+	 return this.userRepository.findByIsActiveTrue();
 		 
 		// Sending only required filds and sorting them increasing order 
-		 
-		/*for (final UserRecord ur : this.userRepository.findAll()) {
+		/*final List<UserBean> userBeans = new ArrayList<>();
+		for (final UserRecord ur : this.userRepository.findAll()) {
 			UserBean bean = new UserBean();
 			bean.appUserId = ur.id;
 			bean.email = ur.email;
@@ -38,7 +43,10 @@ public class UserService {
 			bean.employeeId = ur.employeeId;
 			userBeans.add(bean);
 		}
-		userBeans.sort((a, b) -> a.appUserId.compareTo(b.appUserId));*/
+		userBeans.sort((a, b) -> a.appUserId.compareTo(b.appUserId));
+
+		return userBeans;*/
+				
 	}
 
 	public UserRecord getUser(Long userId) {
@@ -90,9 +98,10 @@ public class UserService {
 	public UserRecord updateUser(UserBean bean) {
 		UserRecord userRecord;
 		userRecord = this.userRepository.findOne(bean.appUserId);
-		Assert.isNull(this.userRepository.findByEmailIgnoreCaseAndIdNot(bean.email.trim().toLowerCase(),bean.appUserId),
+		Assert.isNull(
+				this.userRepository.findByEmailIgnoreCaseAndIdNot(bean.email.trim().toLowerCase(), bean.appUserId),
 				"Entered email is already registered.");
-		Assert.isNull(this.userRepository.findByMobileNumberAndIdNot(bean.mobileNumber,bean.appUserId),
+		Assert.isNull(this.userRepository.findByMobileNumberAndIdNot(bean.mobileNumber, bean.appUserId),
 				"Entered mobile number is already registered.");
 		Assert.isNull(this.userRepository.findByEmployeeIdAndIdNot(bean.employeeId, bean.appUserId),
 				"Employee ID is already registered.");
@@ -104,7 +113,7 @@ public class UserService {
 
 		return this.userRepository.save(userRecord);
 	}
-	
+
 	public Language saveOrUpdateLanguage(LanguageBean bean) {
 		Language language;
 
@@ -123,6 +132,10 @@ public class UserService {
 
 		return this.languageRepository.save(language);
 
+	}
+	
+	public List<Language> getAllLanguages() {
+		return this.languageRepository.findAll();
 	}
 	
 }

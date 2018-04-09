@@ -20,4 +20,6 @@ public class UserBean {
 	public String employeeId;
 
 	public List<Object> userData = new ArrayList<>();
+	
+	public List<LanguageBean> userLanguageInfos;
 }

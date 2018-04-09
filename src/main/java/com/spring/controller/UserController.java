@@ -37,7 +37,7 @@ public class UserController {
 
 	// Get All Users
 	@GetMapping("/get-all-users")
-	public GeneralResponse getAllUser() {
+	public GeneralResponse getAllUsers() {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.getAllUsers());
 	}
 
@@ -52,10 +52,17 @@ public class UserController {
 	public GeneralResponse updateUser(@RequestBody UserBean bean) {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.updateUser(bean));
 	}
-	
+
 	// Create a User
-		@PostMapping("/add-language")
-		public GeneralResponse saveOrUpdateLanguage(@RequestBody LanguageBean bean) {
-			return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.saveOrUpdateLanguage(bean));
-		}
+	@PostMapping("/add-language")
+	public GeneralResponse saveOrUpdateLanguage(@RequestBody LanguageBean bean) {
+		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.saveOrUpdateLanguage(bean));
+	}
+
+	// Get All Languages
+	@GetMapping("/get-all-languages")
+	public GeneralResponse getAllLanguages() {
+		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.getAllLanguages());
+	}
+
 }
