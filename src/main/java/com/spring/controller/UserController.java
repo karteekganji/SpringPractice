@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spring.beans.LanguageBean;
+import com.spring.beans.LanguageInfoBean;
 import com.spring.beans.UserBean;
-import com.spring.repo.UserRepository;
 import com.spring.services.UserService;
 import com.spring.utils.Constants;
 import com.spring.utils.GeneralResponse;
@@ -19,9 +19,6 @@ public class UserController {
 
 	@Autowired
 	UserService userService;
-
-	@Autowired
-	UserRepository userRepository;
 
 	// Create a User
 	@PostMapping("/add-user")
@@ -64,5 +61,23 @@ public class UserController {
 	public GeneralResponse getAllLanguages() {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.getAllLanguages());
 	}
+	
+	// Get a Single Language
+	@GetMapping("/get-language/{langId}")
+	public GeneralResponse getLanguage(@PathVariable Long langId) {
+		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.getLanguage(langId));
+	}
+
+	@PostMapping("/save-user-language-info")
+	public GeneralResponse saveUserLangaugeInfo(@RequestBody LanguageInfoBean langBean){
+		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.saveUserLanguageInfo(langBean));
+	}
+	
+	@GetMapping("/get-user-languages/{userId}")
+	public GeneralResponse getUserLanguages(@PathVariable Long userId){
+		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.getUserLanguages(userId));
+	}
+	
+	
 
 }

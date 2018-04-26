@@ -22,4 +22,5 @@ public class UserBean {
 	public List<Object> userData = new ArrayList<>();
 	
 	public List<LanguageBean> userLanguageInfos;
+	
 }

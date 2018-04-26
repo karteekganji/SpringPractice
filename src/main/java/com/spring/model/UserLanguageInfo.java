@@ -7,7 +7,7 @@ import javax.persistence.ManyToOne;
 public class UserLanguageInfo extends BaseEntity{
 
 	@ManyToOne
-	public UserRecord user;
+	public UserRecord appUser;
 	
 	@ManyToOne
 	public Language language;

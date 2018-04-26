@@ -3,12 +3,12 @@ package com.spring.services;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tomcat.jni.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import com.spring.beans.LanguageBean;
+import com.spring.beans.LanguageInfoBean;
 import com.spring.beans.UserBean;
 import com.spring.model.Language;
 import com.spring.model.UserLanguageInfo;
@@ -28,6 +28,7 @@ public class UserService {
 	
 	@Autowired
 	private userLanguageInfoRepository languageInfoRepository;
+		
 	public List<UserRecord> getAllUsers() {
 		
 	 return this.userRepository.findByIsActiveTrue();
@@ -54,8 +55,8 @@ public class UserService {
 		UserRecord user = userRepository.findOne(userId);
 		Assert.notNull(user, "No User found with the given userId");
 
-		// final UserBean bean= new UserBean();
-		// bean.userData.add(this.mapUserBeans(user));
+//		 final UserBean bean= new UserBean();
+//		 bean.userData.add(this.mapUserBeans(user));
 		return user;
 	}
 
@@ -138,4 +139,48 @@ public class UserService {
 		return this.languageRepository.findAll();
 	}
 	
+	public Language getLanguage(Long langid){
+		return this.languageRepository.findOne(langid);
+	}
+	public UserLanguageInfo saveUserLanguageInfo(LanguageInfoBean langBean){
+		
+		
+		
+		UserRecord user = this.userRepository.findOne(langBean.appUserId);
+		Language language = this.languageRepository.findOne(langBean.languageId);
+		
+		UserLanguageInfo langinfo = new UserLanguageInfo();
+		
+		langinfo.appUser = user;
+		langinfo.language = language;
+		
+		List<UserLanguageInfo> data = this.languageInfoRepository.findByAppUserIdAndLanguageId(langBean.appUserId, langBean.languageId);
+		
+		if (data.isEmpty()) {
+			return this.languageInfoRepository.save(langinfo);
+		}
+		else{
+			throw new IllegalArgumentException("You cannot add duplicate lanuages to one user");
+		}
+	}
+	
+	public UserBean getUserLanguages(Long userId) {
+		final UserBean bean = new UserBean();
+		bean.userLanguageInfos = this.mapUserLanguageInfoBeans(userId);
+		return bean;
+	}
+
+	public List<LanguageBean> mapUserLanguageInfoBeans(Long userId) {
+		final List<LanguageBean> languageBeans = new ArrayList<>();
+		final List<UserLanguageInfo> userLanguageInfos = this.languageInfoRepository.findByAppUserId(userId);
+		Assert.notEmpty(userLanguageInfos, "No language Info found for given user");
+		for (final UserLanguageInfo userLanguageInfo : userLanguageInfos) {
+			final LanguageBean languageBean = new LanguageBean();
+			languageBean.languageId = userLanguageInfo.language.id;
+			languageBean.languageTitle = userLanguageInfo.language.name;
+			languageBeans.add(languageBean);
+		}
+		return languageBeans;
+	}
+
 }
