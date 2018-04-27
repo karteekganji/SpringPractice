@@ -27,7 +27,7 @@ public class UserService {
 	private LanguageRepository languageRepository;
 	
 	@Autowired
-	private userLanguageInfoRepository languageInfoRepository;
+	private userLanguageInfoRepository userLanguageInfoRepository;
 		
 	public List<UserRecord> getAllUsers() {
 		
@@ -142,24 +142,23 @@ public class UserService {
 	public Language getLanguage(Long langid){
 		return this.languageRepository.findOne(langid);
 	}
-	public UserLanguageInfo saveUserLanguageInfo(LanguageInfoBean langBean){
-		
-		
-		
+
+	public UserLanguageInfo saveUserLanguageInfo(LanguageInfoBean langBean) {
+
 		UserRecord user = this.userRepository.findOne(langBean.appUserId);
 		Language language = this.languageRepository.findOne(langBean.languageId);
-		
+
 		UserLanguageInfo langinfo = new UserLanguageInfo();
-		
+
 		langinfo.appUser = user;
 		langinfo.language = language;
-		
-		List<UserLanguageInfo> data = this.languageInfoRepository.findByAppUserIdAndLanguageId(langBean.appUserId, langBean.languageId);
-		
+
+		List<UserLanguageInfo> data = this.userLanguageInfoRepository.findByAppUserIdAndLanguageId(langBean.appUserId,
+				langBean.languageId);
+
 		if (data.isEmpty()) {
-			return this.languageInfoRepository.save(langinfo);
-		}
-		else{
+			return this.userLanguageInfoRepository.save(langinfo);
+		} else {
 			throw new IllegalArgumentException("You cannot add duplicate lanuages to one user");
 		}
 	}
@@ -172,7 +171,7 @@ public class UserService {
 
 	public List<LanguageBean> mapUserLanguageInfoBeans(Long userId) {
 		final List<LanguageBean> languageBeans = new ArrayList<>();
-		final List<UserLanguageInfo> userLanguageInfos = this.languageInfoRepository.findByAppUserId(userId);
+		final List<UserLanguageInfo> userLanguageInfos = this.userLanguageInfoRepository.findByAppUserId(userId);
 		Assert.notEmpty(userLanguageInfos, "No language Info found for given user");
 		for (final UserLanguageInfo userLanguageInfo : userLanguageInfos) {
 			final LanguageBean languageBean = new LanguageBean();

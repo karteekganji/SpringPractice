@@ -78,6 +78,4 @@ public class UserController {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.getUserLanguages(userId));
 	}
 	
-	
-
 }
