@@ -16,6 +16,10 @@ public class UserBean {
 	public String email;
 
 	public String mobileNumber;
+	
+	public String password;
+	
+	public String Auth;
 
 	public String employeeId;
 

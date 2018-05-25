@@ -9,6 +9,8 @@ public class LanguageBean{
 	public Long languageId;
 
 	public String languageTitle;
+	
+	public boolean isDeleted;
 
 	
 	

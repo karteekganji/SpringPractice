@@ -23,6 +23,8 @@ public class UserRecord extends BaseEntity {
 	public String name;
 	public String email;
 	public String mobileNumber;
+	public String password;
+	public String auth;
 	public String employeeId;
 	public Boolean isActive = Boolean.FALSE;
 

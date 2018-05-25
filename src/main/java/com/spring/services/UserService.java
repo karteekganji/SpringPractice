@@ -16,6 +16,8 @@ import com.spring.model.UserRecord;
 import com.spring.repo.LanguageRepository;
 import com.spring.repo.UserRepository;
 import com.spring.repo.userLanguageInfoRepository;
+import com.spring.utils.PracticeUtils;
+
 
 @Service
 public class UserService {
@@ -28,7 +30,7 @@ public class UserService {
 	
 	@Autowired
 	private userLanguageInfoRepository userLanguageInfoRepository;
-		
+	
 	public List<UserRecord> getAllUsers() {
 		
 	 return this.userRepository.findByIsActiveTrue();
@@ -52,7 +54,7 @@ public class UserService {
 
 	public UserRecord getUser(Long userId) {
 
-		UserRecord user = userRepository.findOne(userId);
+		UserRecord user = this.userRepository.findOne(userId);
 		Assert.notNull(user, "No User found with the given userId");
 
 //		 final UserBean bean= new UserBean();
@@ -83,12 +85,25 @@ public class UserService {
 		user.name = bean.name;
 		user.email = bean.email;
 		user.mobileNumber = bean.mobileNumber;
+		user.password = bean.password;
 		user.employeeId = bean.employeeId;
 
 		final UserRecord add = this.userRepository.save(user);
 		return add;
 	}
+	
+	public UserRecord login(UserBean bean) {
 
+		UserRecord user = this.userRepository.findByEmailIgnoreCase(bean.email);
+
+		if (user.password.equals(bean.password)) {
+			user.auth = PracticeUtils.RandomStrInt();
+			return this.userRepository.save(user);
+		} else {
+			throw new IllegalArgumentException("You're password or email is wrong");
+		}
+	}
+	
 	public String deleteUser(Long userId) {
 		final UserRecord user = this.userRepository.findOne(userId);
 		Assert.notNull(user, "No User found with the given userId");
@@ -110,6 +125,7 @@ public class UserService {
 		userRecord.name = bean.name;
 		userRecord.email = bean.email;
 		userRecord.mobileNumber = bean.mobileNumber;
+		userRecord.password = bean.password;
 		userRecord.employeeId = bean.employeeId;
 
 		return this.userRepository.save(userRecord);
@@ -136,7 +152,15 @@ public class UserService {
 	}
 	
 	public List<Language> getAllLanguages() {
-		return this.languageRepository.findAll();
+		return this.languageRepository.findByIsDeleted(Boolean.FALSE);
+		// return this.languageRepository.findAll();
+	}
+	
+	public String deleteLanguage(Long languageId){
+		Language lang = this.languageRepository.findOne(languageId);
+		lang.isDeleted = Boolean.TRUE;
+		this.languageRepository.save(lang);
+		return "Language Deleted successfully";
 	}
 	
 	public Language getLanguage(Long langid){
@@ -181,5 +205,7 @@ public class UserService {
 		}
 		return languageBeans;
 	}
+	
+	
 
 }

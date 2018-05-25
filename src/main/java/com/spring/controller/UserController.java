@@ -25,7 +25,11 @@ public class UserController {
 	public GeneralResponse addUser(@RequestBody UserBean bean) {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.addUser(bean));
 	}
-
+	// Create a User
+		@PostMapping("/login")
+		public GeneralResponse login(@RequestBody UserBean bean) {
+			return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.login(bean));
+		}
 	// Get a Single User
 	@GetMapping("/get-user/{userId}")
 	public GeneralResponse getUser(@PathVariable Long userId) {
@@ -62,6 +66,12 @@ public class UserController {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.getAllLanguages());
 	}
 	
+	// Delete single Languages
+	@PostMapping("/delete-language/{languageId}")
+	public GeneralResponse deleteLanguage(@PathVariable Long languageId) {
+		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.deleteLanguage(languageId));
+	}
+	
 	// Get a Single Language
 	@GetMapping("/get-language/{langId}")
 	public GeneralResponse getLanguage(@PathVariable Long langId) {
@@ -77,5 +87,6 @@ public class UserController {
 	public GeneralResponse getUserLanguages(@PathVariable Long userId){
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.getUserLanguages(userId));
 	}
+	
 	
 }
