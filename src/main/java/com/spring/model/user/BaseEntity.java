@@ -1,4 +1,4 @@
-package com.spring.model;
+package com.spring.model.user;
 
 import java.sql.Timestamp;
 
@@ -12,6 +12,8 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.Data;
+@Data
 @MappedSuperclass
 //@JsonIgnoreProperties(value = { "createdAt", "updatedAt" })
 public class BaseEntity {

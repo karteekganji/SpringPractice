@@ -7,15 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import com.spring.beans.LanguageBean;
-import com.spring.beans.LanguageInfoBean;
-import com.spring.beans.UserBean;
-import com.spring.model.Language;
-import com.spring.model.UserLanguageInfo;
-import com.spring.model.UserRecord;
-import com.spring.repo.LanguageRepository;
-import com.spring.repo.UserRepository;
-import com.spring.repo.userLanguageInfoRepository;
+import com.spring.beans.user.LanguageBean;
+import com.spring.beans.user.LanguageInfoBean;
+import com.spring.beans.user.UserBean;
+import com.spring.model.user.Language;
+import com.spring.model.user.UserLanguageInfo;
+import com.spring.model.user.UserRecord;
+import com.spring.repo.user.LanguageRepository;
+import com.spring.repo.user.UserRepository;
+import com.spring.repo.user.userLanguageInfoRepository;
 import com.spring.utils.PracticeUtils;
 
 
@@ -32,9 +32,11 @@ public class UserService {
 	private userLanguageInfoRepository userLanguageInfoRepository;
 	
 	public List<UserRecord> getAllUsers() {
-		
-	 return this.userRepository.findByIsActiveTrue();
-		 
+
+		List<UserRecord> list = this.userRepository.findByIsActiveTrue();
+		list.sort((a, b) -> a.getId().compareTo(b.getId()));
+		return list;
+
 		// Sending only required filds and sorting them increasing order 
 		/*final List<UserBean> userBeans = new ArrayList<>();
 		for (final UserRecord ur : this.userRepository.findAll()) {
@@ -68,7 +70,6 @@ public class UserService {
 		bean.name = user.name;
 		bean.email = user.email;
 		bean.appUserId = user.id;
-		bean.employeeId = user.employeeId;
 		bean.mobileNumber = user.mobileNumber;
 		return bean;
 	}
@@ -86,7 +87,6 @@ public class UserService {
 		user.email = bean.email;
 		user.mobileNumber = bean.mobileNumber;
 		user.password = bean.password;
-		user.employeeId = bean.employeeId;
 
 		final UserRecord add = this.userRepository.save(user);
 		return add;
@@ -126,7 +126,6 @@ public class UserService {
 		userRecord.email = bean.email;
 		userRecord.mobileNumber = bean.mobileNumber;
 		userRecord.password = bean.password;
-		userRecord.employeeId = bean.employeeId;
 
 		return this.userRepository.save(userRecord);
 	}

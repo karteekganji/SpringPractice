@@ -1,15 +1,20 @@
-package com.spring.beans;
+package com.spring.beans.user;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-@JsonInclude(Include.NON_EMPTY)
-public class LanguageInfoBean {
-	
+import lombok.Data;
 
+@Data
+@JsonInclude(Include.NON_EMPTY)
+public class LanguageBean{
+	
 	public Long languageId;
 
-	public Long appUserId;
+	public String languageTitle;
+	
+	public boolean isDeleted;
 
-
+	
+	
 }

@@ -1,15 +1,17 @@
 package com.spring.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.spring.beans.LanguageBean;
-import com.spring.beans.LanguageInfoBean;
-import com.spring.beans.UserBean;
+import com.spring.beans.user.LanguageBean;
+import com.spring.beans.user.LanguageInfoBean;
+import com.spring.beans.user.UserBean;
 import com.spring.services.UserService;
 import com.spring.utils.Constants;
 import com.spring.utils.GeneralResponse;
@@ -21,7 +23,7 @@ public class UserController {
 	UserService userService;
 
 	// Create a User
-	@PostMapping("/add-user")
+	@PostMapping("/user")
 	public GeneralResponse addUser(@RequestBody UserBean bean) {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.addUser(bean));
 	}
@@ -33,25 +35,25 @@ public class UserController {
 	}
 
 	// Get a Single User
-	@GetMapping("/get-user/{userId}")
+	@GetMapping("/user/{userId}")
 	public GeneralResponse getUser(@PathVariable Long userId) {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.getUser(userId));
 	}
 
 	// Get All Users
-	@GetMapping("/get-all-users")
+	@GetMapping("/users")
 	public GeneralResponse getAllUsers() {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.getAllUsers());
 	}
 
 	// Delete a User
-	@PostMapping("/delete-user/{userId}")
+	@DeleteMapping("/user/{userId}")
 	public GeneralResponse deleteUser(@PathVariable Long userId) {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.deleteUser(userId));
 	}
 
 	// Update a User
-	@PostMapping("/update-user")
+	@PutMapping("/user")
 	public GeneralResponse updateUser(@RequestBody UserBean bean) {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.updateUser(bean));
 	}
@@ -89,5 +91,6 @@ public class UserController {
 	public GeneralResponse getUserLanguages(@PathVariable Long userId) {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.getUserLanguages(userId));
 	}
-
+	
+	
 }

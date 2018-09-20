@@ -1,11 +1,11 @@
-package com.spring.repo;
+package com.spring.repo.user;
 
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.spring.model.UserRecord;
+import com.spring.model.user.UserRecord;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserRecord, Long> {
