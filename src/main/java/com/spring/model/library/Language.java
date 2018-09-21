@@ -1,9 +1,9 @@
-package com.spring.model.user;
+package com.spring.model.library;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
-import com.spring.beans.user.LanguageBean;
+import com.spring.beans.Library.LanguageBean;
 
 import lombok.Data;
 

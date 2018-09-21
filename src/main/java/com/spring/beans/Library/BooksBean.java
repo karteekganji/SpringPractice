@@ -1,12 +1,10 @@
-package com.spring.model.library;
-
-import javax.persistence.Entity;
+package com.spring.beans.Library;
 
 import lombok.Data;
 
 @Data
-@Entity
-public class Books extends BaseEntity {
+public class BooksBean {
+	public Long id;
 	public String title;
 	public String description;
 	public Integer pages;

@@ -1,39 +1,50 @@
 package com.spring.services;
 
-import java.util.ArrayList;
+import static org.mockito.Matchers.isNotNull;
+import static org.mockito.Matchers.isNull;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import com.spring.beans.user.LanguageBean;
-import com.spring.beans.user.LanguageInfoBean;
-import com.spring.beans.user.UserBean;
-import com.spring.model.user.Language;
-import com.spring.model.user.UserLanguageInfo;
-import com.spring.model.user.UserRecord;
-import com.spring.repo.user.LanguageRepository;
-import com.spring.repo.user.UserRepository;
-import com.spring.repo.user.userLanguageInfoRepository;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
+import com.spring.beans.Library.AppUserBean;
+import com.spring.beans.Library.LanguageBean;
+import com.spring.model.library.AppUser;
+import com.spring.model.library.City;
+import com.spring.model.library.Language;
+import com.spring.model.library.Library;
+import com.spring.repo.Library.AppUserRepo;
+import com.spring.repo.Library.CityRepo;
+import com.spring.repo.Library.LanguageRepo;
+import com.spring.repo.Library.LibraryRepo;
 import com.spring.utils.PracticeUtils;
+
+import javassist.runtime.Desc;
 
 
 @Service
 public class UserService {
 
 	@Autowired
-	private UserRepository userRepository;
+	private AppUserRepo userRepository;
 	
 	@Autowired
-	private LanguageRepository languageRepository;
+	private LanguageRepo languageRepository;
 	
 	@Autowired
-	private userLanguageInfoRepository userLanguageInfoRepository;
+	CityRepo cityRepo;
 	
-	public List<UserRecord> getAllUsers() {
+	@Autowired
+	LibraryRepo libraryRepo;
+	public List<AppUser> getAllUsers() {
 
-		List<UserRecord> list = this.userRepository.findByIsActiveTrue();
+		List<AppUser> list = this.userRepository.findByIsActiveTrue();
 		list.sort((a, b) -> a.getId().compareTo(b.getId()));
 		return list;
 
@@ -54,9 +65,9 @@ public class UserService {
 				
 	}
 
-	public UserRecord getUser(Long userId) {
+	public AppUser getUser(Long userId) {
 
-		UserRecord user = this.userRepository.findOne(userId);
+		AppUser user = this.userRepository.findOne(userId);
 		Assert.notNull(user, "No User found with the given userId");
 
 //		 final UserBean bean= new UserBean();
@@ -64,9 +75,9 @@ public class UserService {
 		return user;
 	}
 
-	public UserBean mapUserBeans(UserRecord user) {
+	public AppUserBean mapUserBeans(AppUser user) {
 
-		UserBean bean = new UserBean();
+		AppUserBean bean = new AppUserBean();
 		bean.name = user.name;
 		bean.email = user.email;
 		bean.appUserId = user.id;
@@ -74,60 +85,62 @@ public class UserService {
 		return bean;
 	}
 
-	public UserRecord addUser(UserBean bean) {
-		UserRecord user = new UserRecord();
-		Assert.isNull(this.userRepository.findByEmailIgnoreCase(bean.email.trim().toLowerCase()),
-				"Entered email is already registered.");
-		Assert.isNull(this.userRepository.findByMobileNumber(bean.mobileNumber),
-				"Entered mobile number is already registered.");
-		Assert.isNull(this.userRepository.findByEmployeeId(bean.employeeId),
-				"Employee ID is already registered.");
-		
+	public AppUser addUser(AppUserBean bean) {
+		AppUser user;
+		if (bean.appUserId !=null) {
+			user = this.userRepository.findOne(bean.appUserId);
+			Assert.isNull(
+					this.userRepository.findByEmailIgnoreCaseAndIdNot(bean.email.trim().toLowerCase(), bean.appUserId),
+					"Entered email is already registered.");
+			Assert.isNull(this.userRepository.findByMobileNumberAndIdNot(bean.mobileNumber, bean.appUserId),
+					"Entered mobile number is already registered.");
+		}else {
+			user = new AppUser();
+			Assert.isNull(this.userRepository.findByEmailIgnoreCase(bean.email.trim().toLowerCase()),
+					"Entered email is already registered.");
+			Assert.isNull(this.userRepository.findByMobileNumber(bean.mobileNumber),
+					"Entered mobile number is already registered.");
+			user.password = bean.password;
+		}
 		user.name = bean.name;
 		user.email = bean.email;
 		user.mobileNumber = bean.mobileNumber;
-		user.password = bean.password;
+		City city = this.cityRepo.findByCityCode(bean.getCityCode());
+		if (PracticeUtils.isNotEmpty(city)) {
+			user.setCity(city.getCityName());
+		}else {
+			throw new IllegalArgumentException("Entered city code is wrong");
+		}
+		user.setGender(bean.getGender());
 
-		final UserRecord add = this.userRepository.save(user);
+		final AppUser add = this.userRepository.save(user);
 		return add;
 	}
 	
-	public UserRecord login(UserBean bean) {
-
-		UserRecord user = this.userRepository.findByEmailIgnoreCase(bean.email);
-
+	public TreeMap<String, Object> login(AppUserBean bean) {
+		AppUser user = this.userRepository.findByEmailIgnoreCase(bean.email);
+		if (user==null) {
+			throw new NullPointerException("You're password or email is wrong");
+		}
+		
 		if (user.password.equals(bean.password)) {
 			user.auth = PracticeUtils.RandomStrInt();
-			return this.userRepository.save(user);
+			this.userRepository.save(user);
+			List<Library> list = this.libraryRepo.findByCity(bean.getCity());
+			TreeMap<String, Object> map = new TreeMap<String, Object>();
+			map.put("Libraries", list);
+			map.put("userDetails", user);
+			return map;
 		} else {
 			throw new IllegalArgumentException("You're password or email is wrong");
 		}
 	}
 	
 	public String deleteUser(Long userId) {
-		final UserRecord user = this.userRepository.findOne(userId);
+		final AppUser user = this.userRepository.findOne(userId);
 		Assert.notNull(user, "No User found with the given userId");
 		this.userRepository.delete(user);
 		return "User deleted successfully";
-	}
-
-	public UserRecord updateUser(UserBean bean) {
-		UserRecord userRecord;
-		userRecord = this.userRepository.findOne(bean.appUserId);
-		Assert.isNull(
-				this.userRepository.findByEmailIgnoreCaseAndIdNot(bean.email.trim().toLowerCase(), bean.appUserId),
-				"Entered email is already registered.");
-		Assert.isNull(this.userRepository.findByMobileNumberAndIdNot(bean.mobileNumber, bean.appUserId),
-				"Entered mobile number is already registered.");
-		Assert.isNull(this.userRepository.findByEmployeeIdAndIdNot(bean.employeeId, bean.appUserId),
-				"Employee ID is already registered.");
-		Assert.notNull(userRecord, "No User found with the given userId");
-		userRecord.name = bean.name;
-		userRecord.email = bean.email;
-		userRecord.mobileNumber = bean.mobileNumber;
-		userRecord.password = bean.password;
-
-		return this.userRepository.save(userRecord);
 	}
 
 	public Language saveOrUpdateLanguage(LanguageBean bean) {
@@ -166,45 +179,11 @@ public class UserService {
 		return this.languageRepository.findOne(langid);
 	}
 
-	public UserLanguageInfo saveUserLanguageInfo(LanguageInfoBean langBean) {
+	public List<City> getCities() {
 
-		UserRecord user = this.userRepository.findOne(langBean.appUserId);
-		Language language = this.languageRepository.findOne(langBean.languageId);
-
-		UserLanguageInfo langinfo = new UserLanguageInfo();
-
-		langinfo.appUser = user;
-		langinfo.language = language;
-
-		List<UserLanguageInfo> data = this.userLanguageInfoRepository.findByAppUserIdAndLanguageId(langBean.appUserId,
-				langBean.languageId);
-
-		if (data.isEmpty()) {
-			return this.userLanguageInfoRepository.save(langinfo);
-		} else {
-			throw new IllegalArgumentException("You cannot add duplicate lanuages to one user");
-		}
+		List<City> cities = this.cityRepo.findAll();
+		cities.sort((a, b) -> a.getId().compareTo(b.getId()));
+		return cities;
 	}
-	
-	public UserBean getUserLanguages(Long userId) {
-		final UserBean bean = new UserBean();
-		bean.userLanguageInfos = this.mapUserLanguageInfoBeans(userId);
-		return bean;
-	}
-
-	public List<LanguageBean> mapUserLanguageInfoBeans(Long userId) {
-		final List<LanguageBean> languageBeans = new ArrayList<>();
-		final List<UserLanguageInfo> userLanguageInfos = this.userLanguageInfoRepository.findByAppUserId(userId);
-		Assert.notEmpty(userLanguageInfos, "No language Info found for given user");
-		for (final UserLanguageInfo userLanguageInfo : userLanguageInfos) {
-			final LanguageBean languageBean = new LanguageBean();
-			languageBean.languageId = userLanguageInfo.language.id;
-			languageBean.languageTitle = userLanguageInfo.language.name;
-			languageBeans.add(languageBean);
-		}
-		return languageBeans;
-	}
-	
-	
 
 }

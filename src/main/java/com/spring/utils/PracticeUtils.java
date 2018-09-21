@@ -7,5 +7,12 @@ public class PracticeUtils {
 	public static String RandomStrInt() {
 	    return RandomStringUtils.random(10, "abcdefghijklmnopqrstuvwxyz1234567890");
 	}
-
+	
+	 public static boolean isNotEmpty(Object object) {
+	        if (object == null) {
+	            return false;
+	        }
+	        return true;
+	    }
+	
 }

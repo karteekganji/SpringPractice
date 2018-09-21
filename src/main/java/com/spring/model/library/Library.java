@@ -6,9 +6,11 @@ import lombok.Data;
 
 @Data
 @Entity
-public class Category extends BaseEntity{
+public class Library extends BaseEntity{
 
 	public String name;
-	public String description;
+	public String address;
+	public String city;
+	public Boolean isActive = Boolean.TRUE;
 	
 }
