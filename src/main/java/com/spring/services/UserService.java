@@ -1,18 +1,12 @@
 package com.spring.services;
 
-import static org.mockito.Matchers.isNotNull;
-import static org.mockito.Matchers.isNull;
-
-import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.spring.beans.Library.AppUserBean;
 import com.spring.beans.Library.LanguageBean;
 import com.spring.model.library.AppUser;
@@ -24,8 +18,6 @@ import com.spring.repo.Library.CityRepo;
 import com.spring.repo.Library.LanguageRepo;
 import com.spring.repo.Library.LibraryRepo;
 import com.spring.utils.PracticeUtils;
-
-import javassist.runtime.Desc;
 
 
 @Service
@@ -127,6 +119,7 @@ public class UserService {
 			user.auth = PracticeUtils.RandomStrInt();
 			this.userRepository.save(user);
 			List<Library> list = this.libraryRepo.findByCity(bean.getCity());
+			list.sort((a,b) -> a.getId().compareTo(b.getId()));
 			TreeMap<String, Object> map = new TreeMap<String, Object>();
 			map.put("Libraries", list);
 			map.put("userDetails", user);

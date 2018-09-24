@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,9 +12,6 @@ import com.spring.beans.Library.AppUserBean;
 import com.spring.beans.Library.BooksBean;
 import com.spring.beans.Library.LanguageBean;
 import com.spring.beans.Library.LibraryBean;
-import com.spring.model.library.Books;
-import com.spring.repo.Library.CityRepo;
-import com.spring.repo.Library.LibraryRepo;
 import com.spring.services.LibraryService;
 import com.spring.services.UserService;
 import com.spring.utils.Constants;
@@ -110,4 +106,6 @@ public class LibraryController {
 	public GeneralResponse deleteBook(@RequestBody BooksBean bean	){
 		return new GeneralResponse (Constants.RESPONSE_SUCCESS, this.libraryService.deleteBook(bean));
 	}
+	
+	
 }
