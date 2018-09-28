@@ -142,16 +142,15 @@ public class UserService {
 		if (bean.languageId != null) {
 			language = this.languageRepository.findOne(bean.languageId);
 			Assert.notNull(language, "No Language found !!");
-			Assert.isNull(this.languageRepository.findByNameIgnoreCaseAndIdNot(bean.languageTitle, bean.languageId),
+			Assert.isNull(this.languageRepository.findByNameIgnoreCaseAndIdNot(bean.name, bean.languageId),
 					"Language already exists with the given name.");
-			language.name = bean.languageTitle;
 		} else {
 			language = new Language();
-			Assert.isNull(this.languageRepository.findByNameIgnoreCase(bean.languageTitle),
+			Assert.isNull(this.languageRepository.findByNameIgnoreCase(bean.name),
 					"Language already exists with the given name.");
-			language.name = bean.languageTitle;
 		}
-
+		language.name = bean.name;
+		language.isDeleted = bean.isDeleted;
 		return this.languageRepository.save(language);
 
 	}

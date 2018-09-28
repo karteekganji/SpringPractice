@@ -6,10 +6,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spring.beans.Library.AppUserBean;
 import com.spring.beans.Library.BooksBean;
+import com.spring.beans.Library.CategoryBean;
 import com.spring.beans.Library.LanguageBean;
 import com.spring.beans.Library.LibraryBean;
 import com.spring.services.LibraryService;
@@ -92,16 +94,34 @@ public class LibraryController {
 		return new GeneralResponse (Constants.RESPONSE_SUCCESS, this.libraryService.addLibrary(bean));
 	}
 	
+	@PostMapping("/add-category")
+	public GeneralResponse addLibrary(@RequestBody CategoryBean bean) {
+		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.libraryService.addCategory(bean));
+	}
+
 	@DeleteMapping("/delete-library/{Id}")
 	public GeneralResponse deleteLibrary(@RequestBody LibraryBean bean	){
 		return new GeneralResponse (Constants.RESPONSE_SUCCESS, this.libraryService.deleteLibrary(bean));
 	}
 	
 	@PostMapping("/add-book")
-	public GeneralResponse addBook(@RequestBody BooksBean bean	){
+	public GeneralResponse addBook(@RequestBody BooksBean bean){
 		return new GeneralResponse (Constants.RESPONSE_SUCCESS, this.libraryService.addBook(bean));
 	}
+	@GetMapping("/get-book/{Id}")
+	public GeneralResponse getBook(@PathVariable Long Id){
+		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.libraryService.getBook(Id));
+	}
+	@GetMapping("/get-allBooks")
+	public GeneralResponse getAllBooks(){
+		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.libraryService.getAllBooks());
+	}
 	
+	@GetMapping("/search-books")
+	public GeneralResponse searchBook(@RequestParam(name = "langaugeId", required = false) Long languageId, @RequestParam(name = "categoryId", required = false) Long categoryId ){
+		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.libraryService.searchBooks(languageId,categoryId));
+	}
+
 	@PostMapping("/delete-book/{Id}")
 	public GeneralResponse deleteBook(@RequestBody BooksBean bean	){
 		return new GeneralResponse (Constants.RESPONSE_SUCCESS, this.libraryService.deleteBook(bean));
