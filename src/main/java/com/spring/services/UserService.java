@@ -118,7 +118,7 @@ public class UserService {
 		if (user.password.equals(bean.password)) {
 			user.auth = PracticeUtils.RandomStrInt();
 			this.userRepository.save(user);
-			List<Library> list = this.libraryRepo.findByCity(bean.getCity());
+			List<Library> list = this.libraryRepo.findByCityCityName(bean.getCityName());
 			list.sort((a,b) -> a.getId().compareTo(b.getId()));
 			TreeMap<String, Object> map = new TreeMap<String, Object>();
 			map.put("Libraries", list);

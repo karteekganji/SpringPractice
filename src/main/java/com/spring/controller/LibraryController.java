@@ -94,6 +94,12 @@ public class LibraryController {
 		return new GeneralResponse (Constants.RESPONSE_SUCCESS, this.libraryService.addLibrary(bean));
 	}
 	
+	@GetMapping("/get-all-library")
+	public GeneralResponse getAllLibrarys(@RequestParam(name = "cityCode", required = false) String cityCode){
+		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.libraryService.getAllLibrarys(cityCode));
+	}
+
+	
 	@PostMapping("/add-category")
 	public GeneralResponse addLibrary(@RequestBody CategoryBean bean) {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.libraryService.addCategory(bean));
@@ -112,7 +118,7 @@ public class LibraryController {
 	public GeneralResponse getBook(@PathVariable Long Id){
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.libraryService.getBook(Id));
 	}
-	@GetMapping("/get-allBooks")
+	@GetMapping("/get-all-books")
 	public GeneralResponse getAllBooks(){
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.libraryService.getAllBooks());
 	}

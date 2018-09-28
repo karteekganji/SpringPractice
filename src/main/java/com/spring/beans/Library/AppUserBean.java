@@ -27,7 +27,7 @@ public class AppUserBean {
 	
 	public String cityCode;
 	
-	public String city;
+	public String cityName;
 	
 	public String gender;
 	

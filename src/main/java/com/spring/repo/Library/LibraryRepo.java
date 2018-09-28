@@ -10,6 +10,6 @@ import com.spring.model.library.Library;
 @Repository
 public interface LibraryRepo extends JpaRepository<Library, Long>{
 
-	List<Library> findByCity(String city);
-	
+	List<Library> findByCityCityName(String cityName);
+	List<Library> findByCityCityCode(String cityCode);
 }

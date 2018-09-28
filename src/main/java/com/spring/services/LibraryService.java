@@ -55,7 +55,7 @@ public class LibraryService {
 		library.setName(bean.getName());
 		City city = this.cityRepo.findByCityCode(bean.getCity());
 		if (PracticeUtils.isNotEmpty(city)) {
-			library.setCity(city.getCityName());
+			library.city.setCityName(city.getCityName());
 		}else {
 			throw new IllegalArgumentException("Entered city code is wrong");
 		}
@@ -64,7 +64,18 @@ public class LibraryService {
 		return this.libraryRepo.save(library);
 
 	}
-
+	
+	public List<Library> getAllLibrarys(String cityCode){
+		List<Library> libraries;
+		if (cityCode!=null) {
+			libraries = this.libraryRepo.findByCityCityCode(cityCode);
+		}else {
+			libraries = this.libraryRepo.findAll();
+		}
+		libraries.sort((a,b)->a.getId().compareTo(b.getId()));
+		return libraries;
+	}
+	
 	public Category addCategory(CategoryBean bean) {
 		Category category;
 		if (bean.getId() != null) {

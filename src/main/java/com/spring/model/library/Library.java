@@ -1,6 +1,7 @@
 package com.spring.model.library;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 
 import lombok.Data;
 
@@ -10,7 +11,9 @@ public class Library extends BaseEntity{
 
 	public String name;
 	public String address;
-	public String city;
+	@ManyToOne
+	public City city;
 	public Boolean isActive = Boolean.TRUE;
+	
 	
 }
