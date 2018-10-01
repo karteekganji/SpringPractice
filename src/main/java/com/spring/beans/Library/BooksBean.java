@@ -15,9 +15,10 @@ public class BooksBean {
 	public Integer pages;
 	public Long languageId;
 	public String languageName;
-	public String publisher;
+	public Long publisherId;
+	public Long publisherName;
 	public String author;
 	public Long categoryId;
 	public String categoryName;
-	public String isActive;
+	public Boolean isActive;
 }

@@ -1,8 +1,6 @@
 package com.spring.services;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,16 +10,19 @@ import org.springframework.util.Assert;
 import com.spring.beans.Library.BooksBean;
 import com.spring.beans.Library.CategoryBean;
 import com.spring.beans.Library.LibraryBean;
+import com.spring.beans.Library.PublisherBean;
 import com.spring.model.library.Books;
 import com.spring.model.library.Category;
 import com.spring.model.library.City;
 import com.spring.model.library.Language;
 import com.spring.model.library.Library;
+import com.spring.model.library.Publisher;
 import com.spring.repo.Library.BooksRepo;
 import com.spring.repo.Library.CategoryRepo;
 import com.spring.repo.Library.CityRepo;
 import com.spring.repo.Library.LanguageRepo;
 import com.spring.repo.Library.LibraryRepo;
+import com.spring.repo.Library.PublisherRepo;
 import com.spring.utils.PracticeUtils;
 
 @Service
@@ -29,18 +30,16 @@ public class LibraryService {
 
 	@Autowired
 	LibraryRepo libraryRepo;
-
 	@Autowired
 	CityRepo cityRepo;
-	
 	@Autowired
 	BooksRepo booksRepo;
-	
 	@Autowired
 	CategoryRepo categoryRepo;
-	
 	@Autowired
 	LanguageRepo languageRepo;
+	@Autowired
+	PublisherRepo publisherRepo;
 	
 	public Library addLibrary(LibraryBean bean) {
 		Library library;
@@ -53,11 +52,11 @@ public class LibraryService {
 		Assert.notNull(bean.getName(), "Please provide name");
 
 		library.setName(bean.getName());
-		City city = this.cityRepo.findByCityCode(bean.getCity());
+		City city = this.cityRepo.findOne(bean.getCityId());
 		if (PracticeUtils.isNotEmpty(city)) {
-			library.city.setCityName(city.getCityName());
+			library.setCity(city);
 		}else {
-			throw new IllegalArgumentException("Entered city code is wrong");
+			throw new IllegalArgumentException("Entered city Id is wrong");
 		}
 		library.setAddress(bean.getAddress());
 
@@ -65,15 +64,24 @@ public class LibraryService {
 
 	}
 	
-	public List<Library> getAllLibrarys(String cityCode){
+	public List<LibraryBean> getAllLibrarys(String cityCode) {
 		List<Library> libraries;
-		if (cityCode!=null) {
+		if (cityCode != null) {
 			libraries = this.libraryRepo.findByCityCityCode(cityCode);
-		}else {
+		} else {
 			libraries = this.libraryRepo.findAll();
 		}
-		libraries.sort((a,b)->a.getId().compareTo(b.getId()));
-		return libraries;
+		List<LibraryBean> beans = new ArrayList<>();
+		for (Library library : libraries) {
+			LibraryBean bean = new LibraryBean();
+			bean.setId(library.getId());
+			bean.setName(library.getName());
+			bean.setCityName(library.city.getCityName());
+			beans.add(bean);
+		}
+
+		beans.sort((a, b) -> a.getId().compareTo(b.getId()));
+		return beans;
 	}
 	
 	public Category addCategory(CategoryBean bean) {
@@ -107,27 +115,28 @@ public class LibraryService {
 		}
 		book.setTitle(bean.getTitle());
 		book.setAuthor(bean.getAuthor());
+		book.setIsActive(bean.getIsActive());
 		book.setDescription(bean.getDescription());
 		Language language = this.languageRepo.findOne(bean.getLanguageId());
 		book.setLanguage(language);
 		book.setPages(bean.getPages());
-		book.setPublisher(bean.getPublisher());
+		Publisher publisher = this.publisherRepo.findOne(bean.getPublisherId());
+		book.setPublisher(publisher);
 		Category category = this.categoryRepo.findOne(bean.getCategoryId());
 		book.setCategory(category);	
 		return this.booksRepo.save(book);
 	}
 	
-	public BooksBean getBook(Long Id){
-		
+	public BooksBean getBook(Long Id) {
 		BooksBean bean = new BooksBean();
 		Books books = this.booksRepo.findOne(Id);
-		
+		Assert.notNull(books, "No Book found with given Id");
 		bean.setTitle(books.getTitle());
 		bean.setAuthor(books.getAuthor());
 		bean.setLanguageName(books.language.getName());
 		bean.setCategoryName(books.category.getName());
 		return bean;
-		
+
 	}
 	
 	public List<Books> getAllBooks() {
@@ -139,15 +148,11 @@ public class LibraryService {
 	public List<BooksBean> searchBooks(Long languageId, Long categoryId) {
 		
 		List<Books> books = new ArrayList<Books>();
-		System.out.println("languageId>> "+languageId + "categoryId >> "+ categoryId);
 		if (languageId != null && categoryId != null) {
-			System.out.println(">> Condition 1");
 			books = this.booksRepo.findByLanguageIdAndCategoryId(languageId,categoryId);
 		}else if (languageId != null) {
-			System.out.println(">> Condition 2");
 			books = this.booksRepo.findByLanguageId(languageId);
 		}else if (categoryId != null) {
-			System.out.println(">> Condition 3");
 			 books = this.booksRepo.findByCategoryId(categoryId);
 		}
 		books.sort((a,b)->a.getId().compareTo(b.getId()));
@@ -163,6 +168,19 @@ public class LibraryService {
 			beans.add(bean);
 		}
 		return beans;
+	}
+	
+	public Publisher addPublisher(PublisherBean bean){
+		Publisher publisher;
+		if (bean.getId() != null ) {
+			publisher= this.publisherRepo.findOne(bean.getId());
+		}else {
+			publisher = new Publisher();
+		}
+		publisher.setName(bean.getName());
+		publisher.setDescription(bean.getDescription());
+		this.publisherRepo.save(publisher);
+		return publisher;
 	}
 	
 	public String deleteBook(BooksBean bean) {

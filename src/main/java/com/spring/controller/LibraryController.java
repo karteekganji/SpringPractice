@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.spring.beans.Library.AppUserBean;
 import com.spring.beans.Library.BooksBean;
 import com.spring.beans.Library.CategoryBean;
+import com.spring.beans.Library.CityBean;
 import com.spring.beans.Library.LanguageBean;
 import com.spring.beans.Library.LibraryBean;
+import com.spring.beans.Library.PublisherBean;
 import com.spring.services.LibraryService;
 import com.spring.services.UserService;
 import com.spring.utils.Constants;
@@ -30,9 +32,9 @@ public class LibraryController {
 	LibraryService libraryService;
 	
 	// Create a User
-	@PostMapping("/user")
+	@PostMapping("/signup")
 	public GeneralResponse addUser(@RequestBody AppUserBean bean) {
-		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.addUser(bean));
+		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.signUp(bean));
 	}
 
 	// Create a User
@@ -82,6 +84,11 @@ public class LibraryController {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.getLanguage(langId));
 	}
 	
+	@PostMapping("/add-city")
+	public GeneralResponse addCity(@RequestBody CityBean bean){
+		return new GeneralResponse (Constants.RESPONSE_SUCCESS, this.userService.addCity(bean));
+	}
+	
 	@GetMapping("/get-cities")
 	public GeneralResponse getCities(){
 		return new GeneralResponse (Constants.RESPONSE_SUCCESS, this.userService.getCities());
@@ -99,7 +106,6 @@ public class LibraryController {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.libraryService.getAllLibrarys(cityCode));
 	}
 
-	
 	@PostMapping("/add-category")
 	public GeneralResponse addLibrary(@RequestBody CategoryBean bean) {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.libraryService.addCategory(bean));
@@ -133,5 +139,9 @@ public class LibraryController {
 		return new GeneralResponse (Constants.RESPONSE_SUCCESS, this.libraryService.deleteBook(bean));
 	}
 	
+	@PostMapping("/add-publisher")
+	public GeneralResponse addPublisher(@RequestBody PublisherBean bean){
+		return new GeneralResponse (Constants.RESPONSE_SUCCESS, this.libraryService.addPublisher(bean));
+	}
 	
 }

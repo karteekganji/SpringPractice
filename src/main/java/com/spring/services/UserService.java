@@ -4,16 +4,21 @@ import java.util.List;
 import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import com.spring.beans.Library.AppUserBean;
+import com.spring.beans.Library.CityBean;
 import com.spring.beans.Library.LanguageBean;
+import com.spring.enums.Role;
 import com.spring.model.library.AppUser;
+import com.spring.model.library.Author;
 import com.spring.model.library.City;
 import com.spring.model.library.Language;
 import com.spring.model.library.Library;
 import com.spring.repo.Library.AppUserRepo;
+import com.spring.repo.Library.AuthorRepo;
 import com.spring.repo.Library.CityRepo;
 import com.spring.repo.Library.LanguageRepo;
 import com.spring.repo.Library.LibraryRepo;
@@ -25,15 +30,16 @@ public class UserService {
 
 	@Autowired
 	private AppUserRepo userRepository;
-	
 	@Autowired
 	private LanguageRepo languageRepository;
-	
 	@Autowired
-	CityRepo cityRepo;
-	
+	private CityRepo cityRepo;
 	@Autowired
-	LibraryRepo libraryRepo;
+	private LibraryRepo libraryRepo;
+	@Autowired
+	private AuthorRepo authorRepo;
+	
+	
 	public List<AppUser> getAllUsers() {
 
 		List<AppUser> list = this.userRepository.findByIsActiveTrue();
@@ -77,7 +83,7 @@ public class UserService {
 		return bean;
 	}
 
-	public AppUser addUser(AppUserBean bean) {
+	public AppUser signUp(AppUserBean bean) {
 		AppUser user;
 		if (bean.appUserId !=null) {
 			user = this.userRepository.findOne(bean.appUserId);
@@ -92,7 +98,7 @@ public class UserService {
 					"Entered email is already registered.");
 			Assert.isNull(this.userRepository.findByMobileNumber(bean.mobileNumber),
 					"Entered mobile number is already registered.");
-			user.password = bean.password;
+			user.password = PracticeUtils.encryptPassword(bean.password);
 		}
 		user.name = bean.name;
 		user.email = bean.email;
@@ -104,7 +110,12 @@ public class UserService {
 			throw new IllegalArgumentException("Entered city code is wrong");
 		}
 		user.setGender(bean.getGender());
-
+		user.setRole(bean.getRole());
+		if (bean.getRole().equals(Role.AUTHOR)) {
+			Author author = new Author();
+			author.appUser = user;
+			this.authorRepo.save(author);
+		}
 		final AppUser add = this.userRepository.save(user);
 		return add;
 	}
@@ -115,7 +126,9 @@ public class UserService {
 			throw new NullPointerException("You're password or email is wrong");
 		}
 		
-		if (user.password.equals(bean.password)) {
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		
+		if (passwordEncoder.matches(bean.getPassword(),user.getPassword())) {
 			user.auth = PracticeUtils.RandomStrInt();
 			this.userRepository.save(user);
 			List<Library> list = this.libraryRepo.findByCityCityName(bean.getCityName());
@@ -150,19 +163,19 @@ public class UserService {
 					"Language already exists with the given name.");
 		}
 		language.name = bean.name;
-		language.isDeleted = bean.isDeleted;
+		language.isActive = bean.isActive;
 		return this.languageRepository.save(language);
 
 	}
 	
 	public List<Language> getAllLanguages() {
-		return this.languageRepository.findByIsDeleted(Boolean.FALSE);
+		return this.languageRepository.findByIsActive(Boolean.TRUE);
 		// return this.languageRepository.findAll();
 	}
 	
 	public String deleteLanguage(Long languageId){
 		Language lang = this.languageRepository.findOne(languageId);
-		lang.isDeleted = Boolean.TRUE;
+		lang.setIsActive(Boolean.FALSE);
 		this.languageRepository.save(lang);
 		return "Language Deleted successfully";
 	}
@@ -170,7 +183,20 @@ public class UserService {
 	public Language getLanguage(Long langid){
 		return this.languageRepository.findOne(langid);
 	}
-
+	
+	public City addCity(CityBean bean){
+		City city;
+		if (bean.getCityId() != null ) {
+			city= this.cityRepo.findOne(bean.getCityId());
+		}else {
+			city = new City();
+		}
+		city.setCityCode(bean.getCityCode());
+		city.setCityName(bean.getCityName());
+		this.cityRepo.save(city);
+		return city;
+	}
+	
 	public List<City> getCities() {
 
 		List<City> cities = this.cityRepo.findAll();

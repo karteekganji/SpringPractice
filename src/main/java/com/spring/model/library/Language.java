@@ -17,6 +17,6 @@ public class Language extends BaseEntity{
 	public String name;
 	
 	@JsonIgnore
-	public Boolean isDeleted = Boolean.FALSE;
+	public Boolean isActive = Boolean.FALSE;
 
 }

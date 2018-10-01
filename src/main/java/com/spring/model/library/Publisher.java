@@ -1,4 +1,6 @@
-package com.spring.beans.Library;
+package com.spring.model.library;
+
+import javax.persistence.Entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -6,15 +8,11 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import lombok.Data;
 
 @Data
+@Entity
 @JsonInclude(Include.NON_NULL)
-public class LanguageBean{
-	
-	public Long languageId;
+public class Publisher extends BaseEntity{
 
 	public String name;
-	
-	public Boolean isActive;
-
-	
+	public String description;
 	
 }

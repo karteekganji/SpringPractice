@@ -18,12 +18,13 @@ public class Books extends BaseEntity {
 
 	@ManyToOne
 	public Language language;
-	public String publisher;
+	@ManyToOne
+	public Publisher publisher;
 	public String author;
 	
 	@ManyToOne
 	public Category category;
 	
 	@JsonIgnore
-	public String isActive;
+	public Boolean isActive = Boolean.FALSE;
 }

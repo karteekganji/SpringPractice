@@ -1,15 +1,19 @@
 package com.spring.model.library;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import lombok.Data;
 
 @Data
 @Entity
+@JsonInclude(Include.NON_NULL)
 public class Author extends BaseEntity{
 	
-	public String firstName;
-	public String lastName;
-	public String description;
+	@OneToOne(cascade = CascadeType.ALL)
+	public AppUser appUser;
 }

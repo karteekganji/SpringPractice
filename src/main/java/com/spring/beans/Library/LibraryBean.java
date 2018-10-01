@@ -11,6 +11,7 @@ public class LibraryBean {
 	public Long id;
 	public String name;
 	public String address;
-	public String city;
+	public Long cityId;
+	public String cityName;
 	public Boolean isActive;
 }
