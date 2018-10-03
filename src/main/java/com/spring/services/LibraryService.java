@@ -141,7 +141,7 @@ public class LibraryService {
 	
 	public List<Books> getAllBooks() {
 		List<Books> books = this.booksRepo.findAll();
-		books.sort((a,b)-> a.getTitle().compareTo(b.getTitle()));
+		books.sort((a, b) -> a.getId().compareTo(b.getId()));
 		return books;
 	}
 	

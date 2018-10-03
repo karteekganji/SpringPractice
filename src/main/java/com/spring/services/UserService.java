@@ -1,5 +1,6 @@
 package com.spring.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -11,6 +12,7 @@ import org.springframework.util.Assert;
 import com.spring.beans.Library.AppUserBean;
 import com.spring.beans.Library.CityBean;
 import com.spring.beans.Library.LanguageBean;
+import com.spring.beans.Library.LibraryBean;
 import com.spring.enums.Role;
 import com.spring.model.library.AppUser;
 import com.spring.model.library.Author;
@@ -131,10 +133,18 @@ public class UserService {
 		if (passwordEncoder.matches(bean.getPassword(),user.getPassword())) {
 			user.auth = PracticeUtils.RandomStrInt();
 			this.userRepository.save(user);
-			List<Library> list = this.libraryRepo.findByCityCityName(bean.getCityName());
-			list.sort((a,b) -> a.getId().compareTo(b.getId()));
+			List<Library> list = this.libraryRepo.findByCityCityCode(bean.getCityCode());
+			List<LibraryBean> beans = new ArrayList<>();
+			for (Library library : list) {
+				LibraryBean bean2 = new LibraryBean();
+				bean2.setName(library.getName());
+				bean2.setAddress(library.getAddress());
+				bean2.setId(library.getId());
+				beans.add(bean2);
+			}
+			beans.sort((a,b) -> a.getId().compareTo(b.getId()));
 			TreeMap<String, Object> map = new TreeMap<String, Object>();
-			map.put("Libraries", list);
+			map.put("libraries", beans);
 			map.put("userDetails", user);
 			return map;
 		} else {
