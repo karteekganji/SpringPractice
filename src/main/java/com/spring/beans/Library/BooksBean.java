@@ -21,4 +21,5 @@ public class BooksBean {
 	public Long categoryId;
 	public String categoryName;
 	public Boolean isActive;
+	public Integer copies;
 }

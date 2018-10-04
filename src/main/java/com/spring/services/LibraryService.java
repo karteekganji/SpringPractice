@@ -10,17 +10,20 @@ import org.springframework.util.Assert;
 import com.spring.beans.Library.BooksBean;
 import com.spring.beans.Library.CategoryBean;
 import com.spring.beans.Library.LibraryBean;
+import com.spring.beans.Library.LibraryInfoBean;
 import com.spring.beans.Library.PublisherBean;
 import com.spring.model.library.Books;
 import com.spring.model.library.Category;
 import com.spring.model.library.City;
 import com.spring.model.library.Language;
 import com.spring.model.library.Library;
+import com.spring.model.library.LibraryInfo;
 import com.spring.model.library.Publisher;
 import com.spring.repo.Library.BooksRepo;
 import com.spring.repo.Library.CategoryRepo;
 import com.spring.repo.Library.CityRepo;
 import com.spring.repo.Library.LanguageRepo;
+import com.spring.repo.Library.LibraryInfoRepo;
 import com.spring.repo.Library.LibraryRepo;
 import com.spring.repo.Library.PublisherRepo;
 import com.spring.utils.PracticeUtils;
@@ -40,6 +43,8 @@ public class LibraryService {
 	LanguageRepo languageRepo;
 	@Autowired
 	PublisherRepo publisherRepo;
+	@Autowired
+	LibraryInfoRepo libraryInfoRepo;
 	
 	public Library addLibrary(LibraryBean bean) {
 		Library library;
@@ -124,6 +129,7 @@ public class LibraryService {
 		book.setPublisher(publisher);
 		Category category = this.categoryRepo.findOne(bean.getCategoryId());
 		book.setCategory(category);	
+		book.setCopies(bean.getCopies());
 		return this.booksRepo.save(book);
 	}
 	
@@ -189,5 +195,24 @@ public class LibraryService {
 		Assert.notNull(bean.getId(), "No Book found");
 		book.setIsActive(bean.getIsActive());
 		return "Book deleted successfully";
+	}
+	
+	public List<LibraryInfo> addBooksToLibrary(List<LibraryInfoBean> infoBean) {
+		LibraryInfo info;
+		List<LibraryInfo> infos = new ArrayList<>();
+		for (LibraryInfoBean iterable : infoBean) {
+			info = this.libraryInfoRepo.findByLibraryIdAndBookId(iterable.getLibraryId(), iterable.getBookId());
+			if (info == null) {
+				info = new LibraryInfo();
+			}
+			info.setBookId(iterable.getBookId());
+			info.setLibraryId(iterable.getLibraryId());
+			Books copies = this.booksRepo.findCopiesById(iterable.getBookId());
+			Assert.isTrue(iterable.getCopies() <= 5, "Only 5 copies are allowed");
+			info.setCopies(iterable.getCopies());
+			infos.add(info);
+			this.libraryInfoRepo.save(infos);
+		}
+		return infos;
 	}
 }

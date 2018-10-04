@@ -1,5 +1,7 @@
 package com.spring.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,6 +18,7 @@ import com.spring.beans.Library.CategoryBean;
 import com.spring.beans.Library.CityBean;
 import com.spring.beans.Library.LanguageBean;
 import com.spring.beans.Library.LibraryBean;
+import com.spring.beans.Library.LibraryInfoBean;
 import com.spring.beans.Library.PublisherBean;
 import com.spring.services.LibraryService;
 import com.spring.services.UserService;
@@ -145,4 +148,8 @@ public class LibraryController {
 		return new GeneralResponse (Constants.RESPONSE_SUCCESS, this.libraryService.addPublisher(bean));
 	}
 	
+	@PostMapping("/add-books-tolirary")
+	public GeneralResponse addBooksToLibrary(@RequestBody List<LibraryInfoBean> bean){
+		return new GeneralResponse (Constants.RESPONSE_SUCCESS, this.libraryService.addBooksToLibrary(bean));
+	}
 }

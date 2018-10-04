@@ -27,4 +27,6 @@ public class Books extends BaseEntity {
 	
 	@JsonIgnore
 	public Boolean isActive = Boolean.FALSE;
+			
+	public Integer copies;
 }
