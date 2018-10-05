@@ -28,6 +28,8 @@ import com.spring.repo.Library.LibraryRepo;
 import com.spring.repo.Library.PublisherRepo;
 import com.spring.utils.PracticeUtils;
 
+import scala.collection.parallel.ParIterableLike.Foreach;
+
 @Service
 public class LibraryService {
 
@@ -197,18 +199,27 @@ public class LibraryService {
 		return "Book deleted successfully";
 	}
 	
-	public List<LibraryInfo> addBooksToLibrary(List<LibraryInfoBean> infoBean) {
+	public List<LibraryInfo> addBooksToLibrary(LibraryInfoBean infoBean) {
 		LibraryInfo info;
+		List<LibraryInfoBean> beans = new ArrayList<>();
 		List<LibraryInfo> infos = new ArrayList<>();
-		for (LibraryInfoBean iterable : infoBean) {
+
+		for (LibraryInfoBean iterable : beans) {
 			info = this.libraryInfoRepo.findByLibraryIdAndBookId(iterable.getLibraryId(), iterable.getBookId());
+			Books copies = new Books();
+			copies = this.booksRepo.findOne(iterable.getBookId());
+			Integer count = copies.getCopies();
 			if (info == null) {
 				info = new LibraryInfo();
+				copies.setCopies(count - iterable.getCopies());
+				this.booksRepo.save(copies);
 			}
-			info.setBookId(iterable.getBookId());
-			info.setLibraryId(iterable.getLibraryId());
-			Books copies = this.booksRepo.findCopiesById(iterable.getBookId());
 			Assert.isTrue(iterable.getCopies() <= 5, "Only 5 copies are allowed");
+			if (iterable.getCopies() < info.getCopies()) {
+				copies.setCopies(count+(info.getCopies()-iterable.getCopies()));
+			}else if (iterable.getCopies() > info.getCopies()) {
+				copies.setCopies(count-(iterable.getCopies()-info.getCopies()));
+			}
 			info.setCopies(iterable.getCopies());
 			infos.add(info);
 			this.libraryInfoRepo.save(infos);

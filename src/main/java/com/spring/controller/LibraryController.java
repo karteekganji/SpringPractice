@@ -1,5 +1,6 @@
 package com.spring.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -148,8 +149,8 @@ public class LibraryController {
 		return new GeneralResponse (Constants.RESPONSE_SUCCESS, this.libraryService.addPublisher(bean));
 	}
 	
-	@PostMapping("/add-books-tolirary")
-	public GeneralResponse addBooksToLibrary(@RequestBody List<LibraryInfoBean> bean){
+	@PostMapping("/add-books-tolibrary")
+	public GeneralResponse addBooksToLibrary(@RequestBody LibraryInfoBean bean){
 		return new GeneralResponse (Constants.RESPONSE_SUCCESS, this.libraryService.addBooksToLibrary(bean));
 	}
 }
