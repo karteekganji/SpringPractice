@@ -200,30 +200,34 @@ public class LibraryService {
 	}
 	
 	public List<LibraryInfo> addBooksToLibrary(LibraryInfoBean infoBean) {
-		LibraryInfo info;
-		List<LibraryInfoBean> beans = new ArrayList<>();
-		List<LibraryInfo> infos = new ArrayList<>();
-
-		for (LibraryInfoBean iterable : beans) {
-			info = this.libraryInfoRepo.findByLibraryIdAndBookId(iterable.getLibraryId(), iterable.getBookId());
-			Books copies = new Books();
-			copies = this.booksRepo.findOne(iterable.getBookId());
-			Integer count = copies.getCopies();
-			if (info == null) {
-				info = new LibraryInfo();
-				copies.setCopies(count - iterable.getCopies());
-				this.booksRepo.save(copies);
+		
+		if (!infoBean.getBookId().isEmpty() || infoBean.getBookId() !=null) {
+			for (Long bookId : infoBean.getBookId()) {
+				LibraryInfo info;
+				info = this.libraryInfoRepo.findByLibraryIdAndBookId(infoBean.getLibraryId(), bookId);
+				
+				Books copies = new Books();
+				copies = this.booksRepo.findOne(bookId);
+				Integer count = copies.getCopies();
+				if (info == null) {
+					info = new LibraryInfo();
+					copies.setCopies(count - infoBean.getCopies());
+					this.booksRepo.save(copies);
+				}
+				info.setBookId(bookId);
+				info.setCopies(infoBean.getCopies());
+				info.setLibraryId(infoBean.getLibraryId());
+				Assert.isTrue(infoBean.getCopies() <= 5, "Only 5 copies are allowed");
+				if (info.getCopies() < infoBean.getCopies()) {
+					copies.setCopies(count+(info.getCopies()-infoBean.getCopies()));
+				}else if (infoBean.getCopies() > info.getCopies()) {
+					copies.setCopies(count-(infoBean.getCopies()-info.getCopies()));
+				}
+				info.setCopies(infoBean.getCopies());
+				this.libraryInfoRepo.save(info);
 			}
-			Assert.isTrue(iterable.getCopies() <= 5, "Only 5 copies are allowed");
-			if (iterable.getCopies() < info.getCopies()) {
-				copies.setCopies(count+(info.getCopies()-iterable.getCopies()));
-			}else if (iterable.getCopies() > info.getCopies()) {
-				copies.setCopies(count-(iterable.getCopies()-info.getCopies()));
-			}
-			info.setCopies(iterable.getCopies());
-			infos.add(info);
-			this.libraryInfoRepo.save(infos);
-		}
-		return infos;
+	
+	}
+		return this.libraryInfoRepo.findAll();
 	}
 }
