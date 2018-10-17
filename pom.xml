@@ -100,7 +100,7 @@
 			<artifactId>hibernate-envers</artifactId>
 			<version>3.6.4.Final</version>
 		</dependency>
-
+	
 
 		<dependency>
 			<groupId>org.scala-lang</groupId>
@@ -115,9 +115,15 @@
     <version>3.1.0.RELEASE</version>
 </dependency>
 	</dependencies>
-
+	
 	<build>
 		<plugins>
+		<!-- SONAR QUBE  -->
+		<plugin>
+        <groupId>org.sonarsource.scanner.maven</groupId>
+        <artifactId>sonar-maven-plugin</artifactId>
+        <version>3.5.0.1254</version>
+      </plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
