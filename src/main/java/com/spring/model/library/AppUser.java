@@ -12,6 +12,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.spring.enums.Role;
 
 import lombok.Data;
@@ -31,6 +33,7 @@ public class AppUser extends BaseEntity {
 	public String mobileNumber;
 	@JsonIgnore
 	public String password;
+	@JsonIgnore
 	public String auth;
 	public String gender;
 	public String city;

@@ -28,8 +28,6 @@ import com.spring.repo.Library.LibraryRepo;
 import com.spring.repo.Library.PublisherRepo;
 import com.spring.utils.PracticeUtils;
 
-import scala.collection.parallel.ParIterableLike.Foreach;
-
 @Service
 public class LibraryService {
 
@@ -207,9 +205,9 @@ public class LibraryService {
 			LibraryInfo info;
 			info = this.libraryInfoRepo.findByLibraryIdAndBookId(infoBean.getLibraryId(), bookId);
 
-			Books books;
-			books = this.booksRepo.findOne(bookId);
-			Assert.isNull(books, "No book found with given Id");
+			System.out.println("Book Id -----------"+ bookId);
+			Books books = this.booksRepo.findOne(bookId);
+			Assert.notNull(books, "No book found with given Id");
 			Integer count = books.getCopies();
 			if (info == null) {
 				info = new LibraryInfo();
@@ -217,22 +215,26 @@ public class LibraryService {
 				this.booksRepo.save(books);
 			}
 			Assert.isTrue(infoBean.getCopies() <= 5, "Only 5 copies are allowed");
-			System.out.println("copies --------" + books.getCopies());
+			/*System.out.println("copies --------" + books.getCopies());
 			System.out.println("Library Id -----" + infoBean.getLibraryId() + "   Books Id-------" + bookId);
 			System.out.println("Info Copies-------" + info.getCopies() + "  Bean Copies-------" + infoBean.getCopies());
-			System.out.println(info.getCopies() < infoBean.getCopies());
-			if (infoBean.getCopies() > info.getCopies()) {
-				System.out.println("First Condition");
-				books.setCopies(count - (info.getCopies() - infoBean.getCopies()));
-			} else if (infoBean.getCopies() < info.getCopies()) {
-				System.out.println("Second Condition");
-				books.setCopies(count + (infoBean.getCopies() - info.getCopies()));
+			System.out.println(info.getCopies() < infoBean.getCopies());*/
+			if (info.getCopies() != 0) {
+				if (infoBean.getCopies() > info.getCopies()) {
+					int less = infoBean.getCopies()-info.getCopies();
+					books.setCopies(count - less);
+				} else if (infoBean.getCopies() < info.getCopies()) {
+					int add = info.getCopies()-infoBean.getCopies();
+					books.setCopies(count + add);
+				}
+				this.booksRepo.save(books);
 			}
-			this.booksRepo.save(books);
+			
 			info.setBookId(bookId);
 			info.setCopies(infoBean.getCopies());
 			info.setLibraryId(infoBean.getLibraryId());
 			if (infoBean.getCopies() == 0) {
+				System.out.println("inside del clond");
 				this.libraryInfoRepo.delete(info);
 			}
 			this.libraryInfoRepo.save(info);
