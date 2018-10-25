@@ -1,5 +1,6 @@
 package com.spring.services;
 
+import java.awt.print.Book;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -205,42 +206,37 @@ public class LibraryService {
 			LibraryInfo info;
 			info = this.libraryInfoRepo.findByLibraryIdAndBookId(infoBean.getLibraryId(), bookId);
 
-			System.out.println("Book Id -----------"+ bookId);
 			Books books = this.booksRepo.findOne(bookId);
 			Assert.notNull(books, "No book found with given Id");
 			Integer count = books.getCopies();
+
+			Assert.isTrue(count != 0, books.getTitle() + " Book not available");
+
 			if (info == null) {
 				info = new LibraryInfo();
 				books.setCopies(count - infoBean.getCopies());
 				this.booksRepo.save(books);
 			}
 			Assert.isTrue(infoBean.getCopies() <= 5, "Only 5 copies are allowed");
-			/*System.out.println("copies --------" + books.getCopies());
-			System.out.println("Library Id -----" + infoBean.getLibraryId() + "   Books Id-------" + bookId);
-			System.out.println("Info Copies-------" + info.getCopies() + "  Bean Copies-------" + infoBean.getCopies());
-			System.out.println(info.getCopies() < infoBean.getCopies());*/
 			if (info.getCopies() != 0) {
 				if (infoBean.getCopies() > info.getCopies()) {
-					int less = infoBean.getCopies()-info.getCopies();
+					int less = infoBean.getCopies() - info.getCopies();
 					books.setCopies(count - less);
 				} else if (infoBean.getCopies() < info.getCopies()) {
-					int add = info.getCopies()-infoBean.getCopies();
+					int add = info.getCopies() - infoBean.getCopies();
 					books.setCopies(count + add);
 				}
 				this.booksRepo.save(books);
 			}
-			
 			info.setBookId(bookId);
 			info.setCopies(infoBean.getCopies());
 			info.setLibraryId(infoBean.getLibraryId());
 			if (infoBean.getCopies() == 0) {
-				System.out.println("inside del clond");
 				this.libraryInfoRepo.delete(info);
+			} else {
+				this.libraryInfoRepo.save(info);
 			}
-			this.libraryInfoRepo.save(info);
-
 		}
-
 		return infoBean;
 	}
 }
