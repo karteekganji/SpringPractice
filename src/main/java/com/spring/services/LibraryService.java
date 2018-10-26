@@ -201,42 +201,49 @@ public class LibraryService {
 	public LibraryInfoBean addBooksToLibrary(LibraryInfoBean infoBean) {
 
 		Assert.isTrue(!infoBean.getBookId().isEmpty() || infoBean.getBookId() != null, "No book selected!");
-
+		
 		for (Long bookId : infoBean.getBookId()) {
-			LibraryInfo info;
-			info = this.libraryInfoRepo.findByLibraryIdAndBookId(infoBean.getLibraryId(), bookId);
-
-			Books books = this.booksRepo.findOne(bookId);
-			Assert.notNull(books, "No book found with given Id");
-			Integer count = books.getCopies();
-
-			Assert.isTrue(count != 0, books.getTitle() + " Book not available");
-
-			if (info == null) {
-				info = new LibraryInfo();
-				books.setCopies(count - infoBean.getCopies());
-				this.booksRepo.save(books);
-			}
-			Assert.isTrue(infoBean.getCopies() <= 5, "Only 5 copies are allowed");
-			if (info.getCopies() != 0) {
-				if (infoBean.getCopies() > info.getCopies()) {
-					int less = infoBean.getCopies() - info.getCopies();
-					books.setCopies(count - less);
-				} else if (infoBean.getCopies() < info.getCopies()) {
-					int add = info.getCopies() - infoBean.getCopies();
-					books.setCopies(count + add);
-				}
-				this.booksRepo.save(books);
-			}
-			info.setBookId(bookId);
-			info.setCopies(infoBean.getCopies());
-			info.setLibraryId(infoBean.getLibraryId());
-			if (infoBean.getCopies() == 0) {
-				this.libraryInfoRepo.delete(info);
-			} else {
-				this.libraryInfoRepo.save(info);
-			}
+			OperationsAddingbooksToLibrary(infoBean, bookId);
 		}
+		return infoBean;
+	}
+	
+	public LibraryInfoBean OperationsAddingbooksToLibrary(LibraryInfoBean infoBean, Long bookId) {
+		LibraryInfo info = new LibraryInfo();
+		Books books = new Books();
+		info = this.libraryInfoRepo.findByLibraryIdAndBookId(infoBean.getLibraryId(), bookId);
+		books = this.booksRepo.findOne(bookId);
+		Assert.notNull(books, "No book found with given Id");
+		Integer count = books.getCopies();
+
+		Assert.isTrue(count != 0, books.getTitle() + " Book not available");
+
+		if (info == null) {
+			info = new LibraryInfo();
+			books.setCopies(count - infoBean.getCopies());
+			this.booksRepo.save(books);
+		}
+		Assert.isTrue(infoBean.getCopies() <= 5, "Only 5 copies are allowed");
+		if (info.getCopies() != 0) {
+			if (infoBean.getCopies() > info.getCopies()) {
+				int less = infoBean.getCopies() - info.getCopies();
+				books.setCopies(count - less);
+			} else if (infoBean.getCopies() < info.getCopies()) {
+				int add = info.getCopies() - infoBean.getCopies();
+				books.setCopies(count + add);
+			}
+			this.booksRepo.save(books);
+		}
+		Library library = this.libraryRepo.findOne(infoBean.getLibraryId());
+		info.setBook(books);
+		info.setCopies(infoBean.getCopies());
+		info.setLibrary(library);
+		if (infoBean.getCopies() == 0) {
+			this.libraryInfoRepo.delete(info);
+		} else {
+			this.libraryInfoRepo.save(info);
+		}
+
 		return infoBean;
 	}
 }
