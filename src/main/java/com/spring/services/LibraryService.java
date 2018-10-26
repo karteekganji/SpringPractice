@@ -200,15 +200,20 @@ public class LibraryService {
 
 	public LibraryInfoBean addBooksToLibrary(LibraryInfoBean infoBean) {
 
-		Assert.isTrue(!infoBean.getBookId().isEmpty() || infoBean.getBookId() != null, "No book selected!");
-		
-		for (Long bookId : infoBean.getBookId()) {
-			OperationsAddingbooksToLibrary(infoBean, bookId);
+		Assert.isTrue(!infoBean.getBooks().isEmpty() || infoBean.getBooks() != null, "No book selected!");
+		LibraryInfo info = new LibraryInfo();
+		for (Long bookId : infoBean.getBooks()) {
+			info=OperationsAddingbooksToLibrary(infoBean, bookId);
+		}
+		if (infoBean.getCopies() == 0) {
+			this.libraryInfoRepo.delete(info);
+		} else {
+			this.libraryInfoRepo.save(info);
 		}
 		return infoBean;
 	}
 	
-	public LibraryInfoBean OperationsAddingbooksToLibrary(LibraryInfoBean infoBean, Long bookId) {
+	public LibraryInfo OperationsAddingbooksToLibrary(LibraryInfoBean infoBean, Long bookId) {
 		LibraryInfo info = new LibraryInfo();
 		Books books = new Books();
 		info = this.libraryInfoRepo.findByLibraryIdAndBookId(infoBean.getLibraryId(), bookId);
@@ -238,12 +243,23 @@ public class LibraryService {
 		info.setBook(books);
 		info.setCopies(infoBean.getCopies());
 		info.setLibrary(library);
-		if (infoBean.getCopies() == 0) {
-			this.libraryInfoRepo.delete(info);
-		} else {
-			this.libraryInfoRepo.save(info);
-		}
 
-		return infoBean;
+		return info;
+	}
+
+	public List<BooksBean> LibraryBooks(Long id) {
+		List<LibraryInfo> infos = this.libraryInfoRepo.findByLibraryId(id);
+		List<BooksBean> books = new ArrayList<BooksBean>();
+		for (LibraryInfo libraryInfo : infos) {
+			BooksBean bean = new BooksBean();
+			Books book = this.booksRepo.findOne(libraryInfo.getBook().id);
+			bean.setId(book.getId());
+			bean.setTitle(book.getTitle());
+			bean.setDescription(book.getDescription());
+			bean.setAuthor(book.getAuthor());
+			books.add(bean);
+		}
+		books.sort((a,b) -> a.getTitle().compareTo(b.getTitle()));
+		return books;
 	}
 }

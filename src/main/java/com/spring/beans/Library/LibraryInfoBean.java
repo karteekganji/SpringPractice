@@ -12,7 +12,8 @@ import lombok.Data;
 @Data
 public class LibraryInfoBean {
 	public Long LibraryInfoId;
-	public List<Long> bookId;
+	public List<Long> books;
+	public Long bookId;
 	public Long libraryId;
 	public Integer copies;
 

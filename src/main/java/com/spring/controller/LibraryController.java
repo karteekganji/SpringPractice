@@ -150,4 +150,8 @@ public class LibraryController {
 	public GeneralResponse addBooksToLibrary(@RequestBody LibraryInfoBean bean){
 		return new GeneralResponse (Constants.RESPONSE_SUCCESS, this.libraryService.addBooksToLibrary(bean));
 	}
+	@GetMapping("/library-books/{Id}")
+	public GeneralResponse getLibraryBooks(@PathVariable Long Id){
+		return new GeneralResponse (Constants.RESPONSE_SUCCESS, this.libraryService.LibraryBooks(Id));
+	}
 }
