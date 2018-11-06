@@ -13,6 +13,7 @@ import com.spring.beans.Library.CategoryBean;
 import com.spring.beans.Library.LibraryBean;
 import com.spring.beans.Library.LibraryInfoBean;
 import com.spring.beans.Library.PublisherBean;
+import com.spring.model.library.Author;
 import com.spring.model.library.Books;
 import com.spring.model.library.Category;
 import com.spring.model.library.City;
@@ -20,6 +21,7 @@ import com.spring.model.library.Language;
 import com.spring.model.library.Library;
 import com.spring.model.library.LibraryInfo;
 import com.spring.model.library.Publisher;
+import com.spring.repo.Library.AuthorRepo;
 import com.spring.repo.Library.BooksRepo;
 import com.spring.repo.Library.CategoryRepo;
 import com.spring.repo.Library.CityRepo;
@@ -46,6 +48,8 @@ public class LibraryService {
 	PublisherRepo publisherRepo;
 	@Autowired
 	LibraryInfoRepo libraryInfoRepo;
+	@Autowired
+	AuthorRepo authorRepo;
 
 	public Library addLibrary(LibraryBean bean) {
 		Library library;
@@ -101,7 +105,6 @@ public class LibraryService {
 		category.setDescription(bean.getDescription());
 
 		return this.categoryRepo.save(category);
-
 	}
 
 	public String deleteLibrary(LibraryBean bean) {
@@ -112,15 +115,16 @@ public class LibraryService {
 		return "Library deleted successfully";
 	}
 
-	public Books addBook(BooksBean bean) {
+	public BooksBean addBook(BooksBean bean) {
 		Books book;
-		if (bean.getId() != null) {
-			book = this.booksRepo.findOne(bean.getId());
+		if (bean.getBookId() != null) {
+			book = this.booksRepo.findOne(bean.getBookId());
 		} else {
 			book = new Books();
 		}
 		book.setTitle(bean.getTitle());
-		book.setAuthor(bean.getAuthor());
+		Author author = this.authorRepo.findOne(bean.getAuthorId());
+		book.setAuthor(author);
 		book.setIsActive(bean.getIsActive());
 		book.setDescription(bean.getDescription());
 		Language language = this.languageRepo.findOne(bean.getLanguageId());
@@ -131,25 +135,36 @@ public class LibraryService {
 		Category category = this.categoryRepo.findOne(bean.getCategoryId());
 		book.setCategory(category);
 		book.setCopies(bean.getCopies());
-		return this.booksRepo.save(book);
+		return bookInfos(book);
 	}
 
 	public BooksBean getBook(Long Id) {
-		BooksBean bean = new BooksBean();
 		Books books = this.booksRepo.findOne(Id);
 		Assert.notNull(books, "No Book found with given Id");
-		bean.setTitle(books.getTitle());
-		bean.setAuthor(books.getAuthor());
-		bean.setLanguageName(books.language.getName());
-		bean.setCategoryName(books.category.getName());
-		return bean;
-
+		return bookInfos(books);
 	}
 
-	public List<Books> getAllBooks() {
+	public List<BooksBean> getAllBooks() {
 		List<Books> books = this.booksRepo.findAll();
 		books.sort((a, b) -> a.getId().compareTo(b.getId()));
-		return books;
+		List<BooksBean> beans = new ArrayList<>();
+		for (Books books2 : books) {
+			beans.add(bookInfos(books2));
+		}
+		return beans;
+	}
+
+	public static BooksBean bookInfos(Books book) {
+		BooksBean bean = new BooksBean();
+		bean.setBookId(book.getId());
+		bean.setTitle(book.getTitle());
+		bean.setDescription(book.getDescription());
+		bean.setPages(book.getPages());
+		bean.setCategoryName(book.category.getName());
+		bean.setAuthorName(book.author.appUser.getName());
+		bean.setLanguageName(book.language.getName());
+		bean.setPublisherName(book.publisher.getName());
+		return bean;
 	}
 
 	public List<BooksBean> searchBooks(Long languageId, Long categoryId) {
@@ -166,13 +181,7 @@ public class LibraryService {
 
 		List<BooksBean> beans = new ArrayList<>();
 		for (Books books2 : books) {
-			BooksBean bean = new BooksBean();
-			bean.setId(books2.getId());
-			bean.setTitle(books2.getTitle());
-			bean.setAuthor(books2.getAuthor());
-			bean.setLanguageName(books2.language.getName());
-			bean.setCategoryName(books2.category.getName());
-			beans.add(bean);
+			beans.add(bookInfos(books2));
 		}
 		return beans;
 	}
@@ -191,28 +200,27 @@ public class LibraryService {
 	}
 
 	public String deleteBook(BooksBean bean) {
-		Assert.isNull(bean.getId(), "Provide Id");
-		Books book = this.booksRepo.findOne(bean.getId());
-		Assert.notNull(bean.getId(), "No Book found");
+		Assert.isNull(bean.getBookId(), "Provide Id");
+		Books book = this.booksRepo.findOne(bean.getBookId());
+		Assert.notNull(bean.getBookId(), "No Book found");
 		book.setIsActive(bean.getIsActive());
 		return "Book deleted successfully";
 	}
 
 	public LibraryInfoBean addBooksToLibrary(LibraryInfoBean infoBean) {
-
 		Assert.isTrue(!infoBean.getBooks().isEmpty() || infoBean.getBooks() != null, "No book selected!");
 		LibraryInfo info = new LibraryInfo();
 		for (Long bookId : infoBean.getBooks()) {
-			info=OperationsAddingbooksToLibrary(infoBean, bookId);
-		}
-		if (infoBean.getCopies() == 0) {
-			this.libraryInfoRepo.delete(info);
-		} else {
-			this.libraryInfoRepo.save(info);
+			info = OperationsAddingbooksToLibrary(infoBean, bookId);
+			if (infoBean.getCopies() == 0) {
+				this.libraryInfoRepo.delete(info);
+			} else {
+				this.libraryInfoRepo.save(info);
+			}
 		}
 		return infoBean;
 	}
-	
+
 	public LibraryInfo OperationsAddingbooksToLibrary(LibraryInfoBean infoBean, Long bookId) {
 		LibraryInfo info = new LibraryInfo();
 		Books books = new Books();
@@ -243,7 +251,6 @@ public class LibraryService {
 		info.setBook(books);
 		info.setCopies(infoBean.getCopies());
 		info.setLibrary(library);
-
 		return info;
 	}
 
@@ -253,13 +260,13 @@ public class LibraryService {
 		for (LibraryInfo libraryInfo : infos) {
 			BooksBean bean = new BooksBean();
 			Books book = this.booksRepo.findOne(libraryInfo.getBook().id);
-			bean.setId(book.getId());
+			bean.setBookId(book.getId());
 			bean.setTitle(book.getTitle());
 			bean.setDescription(book.getDescription());
-			bean.setAuthor(book.getAuthor());
+			bean.setAuthorName(book.author.appUser.getName());
 			books.add(bean);
 		}
-		books.sort((a,b) -> a.getTitle().compareTo(b.getTitle()));
+		books.sort((a, b) -> a.getTitle().compareTo(b.getTitle()));
 		return books;
 	}
 }

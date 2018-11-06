@@ -9,15 +9,16 @@ import lombok.Data;
 @Data
 @JsonInclude(Include.NON_NULL)
 public class BooksBean {
-	public Long id;
+	public Long bookId;
 	public String title;
 	public String description;
 	public Integer pages;
 	public Long languageId;
 	public String languageName;
 	public Long publisherId;
-	public Long publisherName;
-	public String author;
+	public String publisherName;
+	public Long authorId;
+	public String authorName;
 	public Long categoryId;
 	public String categoryName;
 	public Boolean isActive;

@@ -20,7 +20,8 @@ public class Books extends BaseEntity {
 	public Language language;
 	@ManyToOne
 	public Publisher publisher;
-	public String author;
+	@ManyToOne
+	public Author author;
 	
 	@ManyToOne
 	public Category category;
