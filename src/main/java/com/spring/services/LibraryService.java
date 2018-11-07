@@ -256,17 +256,13 @@ public class LibraryService {
 
 	public List<BooksBean> LibraryBooks(Long id) {
 		List<LibraryInfo> infos = this.libraryInfoRepo.findByLibraryId(id);
-		List<BooksBean> books = new ArrayList<BooksBean>();
+		List<BooksBean> beans = new ArrayList<BooksBean>();
 		for (LibraryInfo libraryInfo : infos) {
 			BooksBean bean = new BooksBean();
 			Books book = this.booksRepo.findOne(libraryInfo.getBook().id);
-			bean.setBookId(book.getId());
-			bean.setTitle(book.getTitle());
-			bean.setDescription(book.getDescription());
-			bean.setAuthorName(book.author.appUser.getName());
-			books.add(bean);
+			beans.add(bookInfos(book));
 		}
-		books.sort((a, b) -> a.getTitle().compareTo(b.getTitle()));
-		return books;
+		beans.sort((a, b) -> a.getTitle().compareTo(b.getTitle()));
+		return beans;
 	}
 }
