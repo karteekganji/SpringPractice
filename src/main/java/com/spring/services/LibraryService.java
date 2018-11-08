@@ -1,6 +1,5 @@
 package com.spring.services;
 
-import java.awt.print.Book;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -258,11 +257,13 @@ public class LibraryService {
 		List<LibraryInfo> infos = this.libraryInfoRepo.findByLibraryId(id);
 		List<BooksBean> beans = new ArrayList<BooksBean>();
 		for (LibraryInfo libraryInfo : infos) {
-			BooksBean bean = new BooksBean();
 			Books book = this.booksRepo.findOne(libraryInfo.getBook().id);
-			beans.add(bookInfos(book));
+			BooksBean  booksBean = bookInfos(book);
+			booksBean.setCopies(libraryInfo.getCopies());
+			beans.add(booksBean);
 		}
 		beans.sort((a, b) -> a.getTitle().compareTo(b.getTitle()));
 		return beans;
 	}
+	
 }

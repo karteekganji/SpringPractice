@@ -18,6 +18,7 @@ import com.spring.beans.Library.LanguageBean;
 import com.spring.beans.Library.LibraryBean;
 import com.spring.beans.Library.LibraryInfoBean;
 import com.spring.beans.Library.PublisherBean;
+import com.spring.beans.Library.UserActivityBean;
 import com.spring.services.LibraryService;
 import com.spring.services.UserService;
 import com.spring.utils.Constants;
@@ -154,5 +155,8 @@ public class LibraryController {
 	public GeneralResponse getLibraryBooks(@PathVariable Long Id){
 		return new GeneralResponse (Constants.RESPONSE_SUCCESS, this.libraryService.LibraryBooks(Id));
 	}
-	
+	@PostMapping("/books-adding-tocart")
+	public GeneralResponse userActivity(@RequestBody UserActivityBean bean){
+		return new GeneralResponse (Constants.RESPONSE_SUCCESS, this.userService.userAddingBookToCart(bean));
+	}
 }
