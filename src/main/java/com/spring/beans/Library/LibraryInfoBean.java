@@ -1,5 +1,6 @@
 package com.spring.beans.Library;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -12,9 +13,9 @@ import lombok.Data;
 @Data
 public class LibraryInfoBean {
 	public Long LibraryInfoId;
-	public List<Long> books;
 	public Long bookId;
 	public Long libraryId;
 	public Integer copies;
+	List<BooksBean> booksBeans = new ArrayList<>();
 
 }

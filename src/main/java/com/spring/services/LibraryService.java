@@ -207,11 +207,10 @@ public class LibraryService {
 	}
 
 	public LibraryInfoBean addBooksToLibrary(LibraryInfoBean infoBean) {
-		Assert.isTrue(!infoBean.getBooks().isEmpty() || infoBean.getBooks() != null, "No book selected!");
 		LibraryInfo info = new LibraryInfo();
-		for (Long bookId : infoBean.getBooks()) {
-			info = OperationsAddingbooksToLibrary(infoBean, bookId);
-			if (infoBean.getCopies() == 0) {
+		for (BooksBean bean : infoBean.getBooksBeans()) {
+			info = OperationsAddingbooksToLibrary(infoBean, bean);
+			if (bean.getCopies() == 0) {
 				this.libraryInfoRepo.delete(info);
 			} else {
 				this.libraryInfoRepo.save(info);
@@ -220,11 +219,12 @@ public class LibraryService {
 		return infoBean;
 	}
 
-	public LibraryInfo OperationsAddingbooksToLibrary(LibraryInfoBean infoBean, Long bookId) {
+	public LibraryInfo OperationsAddingbooksToLibrary(LibraryInfoBean infoBean, BooksBean bean) {
+		Assert.notNull(bean.getBookId(), "No book selected!");
 		LibraryInfo info = new LibraryInfo();
 		Books books = new Books();
-		info = this.libraryInfoRepo.findByLibraryIdAndBookId(infoBean.getLibraryId(), bookId);
-		books = this.booksRepo.findOne(bookId);
+		info = this.libraryInfoRepo.findByLibraryIdAndBookId(infoBean.getLibraryId(), bean.getBookId());
+		books = this.booksRepo.findOne(bean.getBookId());
 		Assert.notNull(books, "No book found with given Id");
 		Integer count = books.getCopies();
 
@@ -232,23 +232,23 @@ public class LibraryService {
 
 		if (info == null) {
 			info = new LibraryInfo();
-			books.setCopies(count - infoBean.getCopies());
+			books.setCopies(count - bean.getCopies());
 			this.booksRepo.save(books);
 		}
-		Assert.isTrue(infoBean.getCopies() <= 5, "Only 5 copies are allowed");
+		Assert.isTrue(bean.getCopies() <= 5, "Only 5 copies are allowed");
 		if (info.getCopies() != 0) {
-			if (infoBean.getCopies() > info.getCopies()) {
-				int less = infoBean.getCopies() - info.getCopies();
+			if (bean.getCopies() > info.getCopies()) {
+				int less = bean.getCopies() - info.getCopies();
 				books.setCopies(count - less);
-			} else if (infoBean.getCopies() < info.getCopies()) {
-				int add = info.getCopies() - infoBean.getCopies();
+			} else if (bean.getCopies() < info.getCopies()) {
+				int add = info.getCopies() - bean.getCopies();
 				books.setCopies(count + add);
 			}
 			this.booksRepo.save(books);
 		}
 		Library library = this.libraryRepo.findOne(infoBean.getLibraryId());
 		info.setBook(books);
-		info.setCopies(infoBean.getCopies());
+		info.setCopies(bean.getCopies());
 		info.setLibrary(library);
 		return info;
 	}
