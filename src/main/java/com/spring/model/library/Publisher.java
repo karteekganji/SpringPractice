@@ -12,7 +12,7 @@ import lombok.Data;
 @JsonInclude(Include.NON_NULL)
 public class Publisher extends BaseEntity{
 
-	public String name;
-	public String description;
+	private String name;
+	private String description;
 	
 }

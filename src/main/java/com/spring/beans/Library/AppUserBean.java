@@ -10,26 +10,26 @@ import lombok.Data;
 @JsonInclude(Include.NON_EMPTY)
 public class AppUserBean {
 
-	public Long appUserId;
+	private Long appUserId;
 
-	public String name;
+	private String name;
 
-	public String email;
+	private String email;
 
-	public String mobileNumber;
+	private String mobileNumber;
 	
-	public String password;
+	private String password;
 	
-	public String Auth;
+	private String Auth;
 	
-	public String cityCode;
+	private String cityCode;
 	
-	public String cityName;
+	private String cityName;
 	
-	public String gender;
+	private String gender;
 	
-	public Boolean isActive;
+	private Boolean isActive;
 	
-	public Role role;
+	private Role role;
 	
 }

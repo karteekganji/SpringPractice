@@ -8,8 +8,8 @@ import lombok.Data;
 @Data
 @JsonInclude(Include.NON_EMPTY)
 public class CityBean {
-	public Long cityId;
-	public String cityName;
-	public String cityCode;
+	private Long cityId;
+	private String cityName;
+	private String cityCode;
 
 }

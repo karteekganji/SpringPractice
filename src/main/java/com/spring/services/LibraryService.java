@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import com.spring.beans.Library.BooksBean;
+import com.spring.beans.Library.BooksSubBean;
 import com.spring.beans.Library.CategoryBean;
 import com.spring.beans.Library.LibraryBean;
 import com.spring.beans.Library.LibraryInfoBean;
@@ -85,7 +86,7 @@ public class LibraryService {
 			LibraryBean bean = new LibraryBean();
 			bean.setId(library.getId());
 			bean.setName(library.getName());
-			bean.setCityName(library.city.getCityName());
+			bean.setCityName(library.getCity().getCityName());
 			beans.add(bean);
 		}
 
@@ -159,10 +160,10 @@ public class LibraryService {
 		bean.setTitle(book.getTitle());
 		bean.setDescription(book.getDescription());
 		bean.setPages(book.getPages());
-		bean.setCategoryName(book.category.getName());
-		bean.setAuthorName(book.author.appUser.getName());
-		bean.setLanguageName(book.language.getName());
-		bean.setPublisherName(book.publisher.getName());
+		bean.setCategoryName(book.getCategory().getName());
+		bean.setAuthorName(book.getAuthor().getAppUser().getName());
+		bean.setLanguageName(book.getLanguage().getName());
+		bean.setPublisherName(book.getPublisher().getName());
 		return bean;
 	}
 
@@ -208,18 +209,20 @@ public class LibraryService {
 
 	public LibraryInfoBean addBooksToLibrary(LibraryInfoBean infoBean) {
 		LibraryInfo info = new LibraryInfo();
-		for (BooksBean bean : infoBean.getBooksBeans()) {
+		for (BooksSubBean bean : infoBean.getBooksDetails()) {
 			info = OperationsAddingbooksToLibrary(infoBean, bean);
 			if (bean.getCopies() == 0) {
 				this.libraryInfoRepo.delete(info);
 			} else {
+				Library library = this.libraryRepo.findOne(infoBean.getLibraryId());
+				info.setLibrary(library);
 				this.libraryInfoRepo.save(info);
 			}
 		}
 		return infoBean;
 	}
 
-	public LibraryInfo OperationsAddingbooksToLibrary(LibraryInfoBean infoBean, BooksBean bean) {
+	public LibraryInfo OperationsAddingbooksToLibrary(LibraryInfoBean infoBean, BooksSubBean bean) {
 		Assert.notNull(bean.getBookId(), "No book selected!");
 		LibraryInfo info = new LibraryInfo();
 		Books books = new Books();
@@ -246,10 +249,8 @@ public class LibraryService {
 			}
 			this.booksRepo.save(books);
 		}
-		Library library = this.libraryRepo.findOne(infoBean.getLibraryId());
 		info.setBook(books);
 		info.setCopies(bean.getCopies());
-		info.setLibrary(library);
 		return info;
 	}
 
@@ -257,7 +258,7 @@ public class LibraryService {
 		List<LibraryInfo> infos = this.libraryInfoRepo.findByLibraryId(id);
 		List<BooksBean> beans = new ArrayList<BooksBean>();
 		for (LibraryInfo libraryInfo : infos) {
-			Books book = this.booksRepo.findOne(libraryInfo.getBook().id);
+			Books book = this.booksRepo.findOne(libraryInfo.getBook().getId());
 			BooksBean  booksBean = bookInfos(book);
 			booksBean.setCopies(libraryInfo.getCopies());
 			beans.add(booksBean);

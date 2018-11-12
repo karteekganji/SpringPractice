@@ -7,11 +7,8 @@ import lombok.Data;
 
 @Data
 @JsonInclude(Include.NON_NULL)
-public class LibraryBean {
-	private Long id;
-	private String name;
-	private String address;
-	private Long cityId;
-	private String cityName;
-	private Boolean isActive;
+public class BooksSubBean {
+	private Long bookId;
+	private Integer copies;
+	
 }

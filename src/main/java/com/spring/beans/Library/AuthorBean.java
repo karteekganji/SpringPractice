@@ -8,8 +8,8 @@ import lombok.Data;
 @Data
 @JsonInclude(Include.NON_NULL)
 public class AuthorBean {
-	public Long id;
-	public String firstName;
-	public String lastName;
-	public String description;
+	private Long id;
+	private String firstName;
+	private String lastName;
+	private String description;
 }

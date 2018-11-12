@@ -12,8 +12,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.spring.enums.Role;
 
 import lombok.Data;
@@ -28,19 +26,19 @@ import lombok.Data;
 public class AppUser extends BaseEntity {
 
 	@NotNull
-	public String name;
-	public String email;
-	public String mobileNumber;
+	private String name;
+	private String email;
+	private String mobileNumber;
 	@JsonIgnore
-	public String password;
+	private String password;
 	@JsonIgnore
-	public String auth;
-	public String gender;
-	public String city;
-	public Boolean isActive = Boolean.TRUE;
+	private String auth;
+	private String gender;
+	private String city;
+	private Boolean isActive = Boolean.TRUE;
 	
 	@NotNull
 	@Enumerated(EnumType.STRING)
-	public Role role;
+	private Role role;
 
 }

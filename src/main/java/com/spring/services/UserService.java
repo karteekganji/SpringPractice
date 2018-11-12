@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import com.spring.beans.Library.AppUserBean;
+import com.spring.beans.Library.BooksSubBean;
 import com.spring.beans.Library.CityBean;
 import com.spring.beans.Library.LanguageBean;
 import com.spring.beans.Library.LibraryBean;
@@ -86,33 +87,33 @@ public class UserService {
 	public AppUserBean mapUserBeans(AppUser user) {
 
 		AppUserBean bean = new AppUserBean();
-		bean.name = user.name;
-		bean.email = user.email;
-		bean.appUserId = user.id;
-		bean.mobileNumber = user.mobileNumber;
+		bean.setName(user.getName());
+		bean.setEmail(user.getEmail());
+		bean.setAppUserId(user.getId());
+		bean.setMobileNumber(user.getMobileNumber());
 		return bean;
 	}
 
 	public AppUser signUp(AppUserBean bean) {
 		AppUser user;
-		if (bean.appUserId != null) {
-			user = this.userRepository.findOne(bean.appUserId);
+		if (bean.getAppUserId() != null) {
+			user = this.userRepository.findOne(bean.getAppUserId());
 			Assert.isNull(
-					this.userRepository.findByEmailIgnoreCaseAndIdNot(bean.email.trim().toLowerCase(), bean.appUserId),
+					this.userRepository.findByEmailIgnoreCaseAndIdNot(bean.getEmail().trim().toLowerCase(), bean.getAppUserId()),
 					"Entered email is already registered.");
-			Assert.isNull(this.userRepository.findByMobileNumberAndIdNot(bean.mobileNumber, bean.appUserId),
+			Assert.isNull(this.userRepository.findByMobileNumberAndIdNot(bean.getMobileNumber(), bean.getAppUserId()),
 					"Entered mobile number is already registered.");
 		} else {
 			user = new AppUser();
-			Assert.isNull(this.userRepository.findByEmailIgnoreCase(bean.email.trim().toLowerCase()),
+			Assert.isNull(this.userRepository.findByEmailIgnoreCase(bean.getEmail().trim().toLowerCase()),
 					"Entered email is already registered.");
-			Assert.isNull(this.userRepository.findByMobileNumber(bean.mobileNumber),
+			Assert.isNull(this.userRepository.findByMobileNumber(bean.getMobileNumber()),
 					"Entered mobile number is already registered.");
-			user.password = PracticeUtils.encryptPassword(bean.password);
+			user.setPassword(PracticeUtils.encryptPassword(bean.getPassword()));
 		}
-		user.name = bean.name;
-		user.email = bean.email;
-		user.mobileNumber = bean.mobileNumber;
+		user.setName(bean.getName());
+		user.setEmail(bean.getEmail());
+		user.setMobileNumber(bean.getMobileNumber());
 		City city = this.cityRepo.findByCityCode(bean.getCityCode());
 		if (PracticeUtils.isNotEmpty(city)) {
 			user.setCity(city.getCityName());
@@ -123,7 +124,7 @@ public class UserService {
 		user.setRole(bean.getRole());
 		if (bean.getRole().equals(Role.AUTHOR)) {
 			Author author = new Author();
-			author.appUser = user;
+			author.setAppUser(user);
 			this.authorRepo.save(author);
 		}
 		final AppUser add = this.userRepository.save(user);
@@ -131,7 +132,7 @@ public class UserService {
 	}
 
 	public TreeMap<String, Object> login(AppUserBean bean) {
-		AppUser user = this.userRepository.findByEmailIgnoreCase(bean.email);
+		AppUser user = this.userRepository.findByEmailIgnoreCase(bean.getEmail());
 		if (user == null) {
 			throw new NullPointerException("You're password or email is wrong");
 		}
@@ -139,7 +140,7 @@ public class UserService {
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 		if (passwordEncoder.matches(bean.getPassword(), user.getPassword())) {
-			user.auth = PracticeUtils.RandomStrInt();
+			user.setAuth(PracticeUtils.RandomStrInt());
 			this.userRepository.save(user);
 			List<Library> list = this.libraryRepo.findByCityCityCode(bean.getCityCode());
 			List<LibraryBean> beans = new ArrayList<>();
@@ -170,18 +171,18 @@ public class UserService {
 	public Language saveOrUpdateLanguage(LanguageBean bean) {
 		Language language;
 
-		if (bean.languageId != null) {
-			language = this.languageRepository.findOne(bean.languageId);
+		if (bean.getLanguageId() != null) {
+			language = this.languageRepository.findOne(bean.getLanguageId());
 			Assert.notNull(language, "No Language found !!");
-			Assert.isNull(this.languageRepository.findByNameIgnoreCaseAndIdNot(bean.name, bean.languageId),
+			Assert.isNull(this.languageRepository.findByNameIgnoreCaseAndIdNot(bean.getName(), bean.getLanguageId()),
 					"Language already exists with the given name.");
 		} else {
 			language = new Language();
-			Assert.isNull(this.languageRepository.findByNameIgnoreCase(bean.name),
+			Assert.isNull(this.languageRepository.findByNameIgnoreCase(bean.getName()),
 					"Language already exists with the given name.");
 		}
-		language.name = bean.name;
-		language.isActive = bean.isActive;
+		language.setName(bean.getName());
+		language.setIsActive(bean.getIsActive());
 		return this.languageRepository.save(language);
 
 	}
@@ -222,42 +223,53 @@ public class UserService {
 		return cities;
 	}
 
-	public String userAddingBookToCart(UserActivityBean bean) {
+	public UserActivityBean userAddingBookToCart(UserActivityBean bean) {
 		List<LibraryInfo> infos = this.libraryInfoRepo.findByLibraryId(bean.getLibraryId());
 		List<Long> bookId = new ArrayList<>();
-		infos.forEach(a -> bookId.add(a.book.getId()));
-		Assert.isTrue(bookId.contains(bean.getBookId()), "Selected Book is not available in this library");
-		LibraryInfo libraryInfo = this.libraryInfoRepo.findByLibraryIdAndBookId(bean.getLibraryId(), bean.getBookId());
-		UserActivity activity;
-		activity = this.userActivityRepo.findByAppUserIdAndBookId(bean.appUserId, bean.bookId);
-		Integer copies = libraryInfo.getCopies();
-		if (activity == null) {
-			activity = new UserActivity();
-			copies = libraryInfo.getCopies() - bean.getCopies();
-			libraryInfo.setCopies(copies);
-			Assert.isTrue(bean.getCopies() != 0, "No copies selected!");
+		infos.forEach(a -> bookId.add(a.getBook().getId()));
+		Books book = new Books();
+		UserActivity activity = new UserActivity();
+		LibraryInfo libraryInfo;
+		for (BooksSubBean booksBean : bean.getBooksDetails()) {
+			book = this.booksRepo.findOne(booksBean.getBookId());
+			Assert.notNull(book, "No Book is Selected!");
+			Assert.isTrue(bookId.contains(book.getId()), "Selected Book is not available in this library");
+			libraryInfo = this.libraryInfoRepo.findByLibraryIdAndBookId(bean.getLibraryId(), book.getId());
+			activity = this.userActivityRepo.findByAppUserIdAndBookId(bean.getAppUserId(), book.getId());
+			Integer copies = libraryInfo.getCopies();
+
+			if (activity == null) {
+				activity = new UserActivity();
+				Assert.isTrue(booksBean.getCopies() <= libraryInfo.getCopies(),
+						libraryInfo.getCopies() + " copy/copies are available");
+				copies = libraryInfo.getCopies() - booksBean.getCopies();
+				libraryInfo.setCopies(copies);
+				Assert.isTrue(booksBean.getCopies() != 0, "No copies selected!");
+			}
+
+			if (activity.getCopies() != null) {
+				Assert.isTrue(booksBean.getCopies() <=  activity.getCopies() + libraryInfo.getCopies(),
+						libraryInfo.getCopies() + " copy/copies are available");
+			}
+
+			if (activity.getCopies() != null) {
+				if (booksBean.getCopies() > activity.getCopies()) {
+					int less = booksBean.getCopies() - activity.getCopies();
+					libraryInfo.setCopies(copies - less);
+				} else if (booksBean.getCopies() < activity.getCopies()) {
+					int add = activity.getCopies() - booksBean.getCopies();
+					libraryInfo.setCopies(copies + add);
+				}
+				this.libraryInfoRepo.save(libraryInfo);
+			}
+			activity.setCopies(booksBean.getCopies());
+			activity.setBook(book);
 		}
-		if (activity.getCopies() != null) {
-			Assert.isTrue(activity.getCopies() + libraryInfo.getCopies() == bean.getCopies()|| bean.getCopies() < activity.getCopies(),libraryInfo.getCopies() + " copy/copies are available");
-		}
-		AppUser appUser = this.userRepository.findOne(bean.appUserId);
+		AppUser appUser = this.userRepository.findOne(bean.getAppUserId());
 		activity.setAppUser(appUser);
-		Books books = this.booksRepo.findOne(bean.getBookId());
-		activity.setBook(books);
 		Library library = this.libraryRepo.findOne(bean.getLibraryId());
 		activity.setLibrary(library);
-		if (activity.getCopies() != null) {
-			if (bean.getCopies() > activity.getCopies()) {
-				int less = bean.getCopies() - activity.getCopies();
-				libraryInfo.setCopies(copies - less);
-			} else if (bean.getCopies() < activity.getCopies()) {
-				int add = activity.getCopies() - bean.getCopies();
-				libraryInfo.setCopies(copies + add);
-			}
-			this.libraryInfoRepo.save(libraryInfo);
-		}
-		activity.setCopies(bean.getCopies());
 		this.userActivityRepo.save(activity);
-		return "Successfully Added";
+		return bean;
 	}
 }

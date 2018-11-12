@@ -20,14 +20,14 @@ public class BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public Long id;
+	private Long id;
 	
 	@CreationTimestamp
 	@JsonIgnore
-	public Timestamp createdAt;
+	private Timestamp createdAt;
 	
 	@Version
 	@JsonIgnore
-	public Timestamp updatedAt;
+	private Timestamp updatedAt;
 
 }

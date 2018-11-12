@@ -8,6 +8,6 @@ import lombok.Data;
 @Entity	
 public class City extends BaseEntity {
 	
-	public String cityName;
-	public String cityCode;
+	private String cityName;
+	private String cityCode;
 }

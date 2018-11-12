@@ -10,13 +10,12 @@ import lombok.Data;
 public class UserActivity extends BaseEntity{
 
 	@ManyToOne
-	public AppUser appUser;
+	private AppUser appUser;
 	@ManyToOne
-	public Library library;
+	private Library library;
 	@ManyToOne
-	public Books book;
-	
-	public Integer copies;
+	private Books book;
+	private Integer copies;
 	
 	
 }

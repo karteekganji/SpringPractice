@@ -4,8 +4,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class PracticeUtils {
-	public Long id;
-
 	public static String RandomStrInt() {
 		return RandomStringUtils.random(10, "abcdefghijklmnopqrstuvwxyz1234567890");
 	}

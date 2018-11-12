@@ -8,12 +8,9 @@ import lombok.Data;
 @Data
 @JsonInclude(Include.NON_NULL)
 public class LanguageBean{
-	
-	public Long languageId;
-
-	public String name;
-	
-	public Boolean isActive;
+	private Long languageId;
+	private String name;
+	private Boolean isActive;
 
 	
 	

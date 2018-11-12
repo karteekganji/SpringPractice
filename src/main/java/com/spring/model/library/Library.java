@@ -9,11 +9,11 @@ import lombok.Data;
 @Entity
 public class Library extends BaseEntity{
 
-	public String name;
-	public String address;
+	private String name;
+	private String address;
 	@ManyToOne
-	public City city;
-	public Boolean isActive = Boolean.TRUE;
+	private City city;
+	private Boolean isActive = Boolean.TRUE;
 	
 	
 }

@@ -8,9 +8,9 @@ import lombok.Data;
 @Entity
 public class LibraryInfo extends BaseEntity{
 	@ManyToOne
-	public Books book;
+	private Books book;
 	@ManyToOne
-	public Library library;
-	public Integer copies = 0;
+	private Library library;
+	private Integer copies = 0;
 
 }

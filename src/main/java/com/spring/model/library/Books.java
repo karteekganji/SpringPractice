@@ -12,22 +12,22 @@ import lombok.Data;
 @Entity
 public class Books extends BaseEntity {
 	@NotNull
-	public String title;
-	public String description;
-	public Integer pages;
+	private String title;
+	private String description;
+	private Integer pages;
 
 	@ManyToOne
-	public Language language;
+	private Language language;
 	@ManyToOne
-	public Publisher publisher;
+	private Publisher publisher;
 	@ManyToOne
-	public Author author;
+	private Author author;
 	
 	@ManyToOne
-	public Category category;
+	private Category category;
 	
 	@JsonIgnore
-	public Boolean isActive = Boolean.FALSE;
+	private Boolean isActive = Boolean.FALSE;
 			
-	public Integer copies;
+	private Integer copies;
 }

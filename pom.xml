@@ -22,6 +22,10 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
+
+		<sonar.analysis.mode>preview</sonar.analysis.mode>
+		<sonar.issuesReport.html.enable>true</sonar.issuesReport.html.enable>
+
 	</properties>
 
 	<dependencies>
@@ -92,14 +96,12 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.0</version>
-		</dependency>
+			</dependency>
 
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-envers</artifactId>
-			<version>3.6.4.Final</version>
-		</dependency>
+			</dependency>
 	
 
 		<dependency>
@@ -112,8 +114,7 @@
 <dependency>
     <groupId>org.springframework.security</groupId>
     <artifactId>spring-security-crypto</artifactId>
-    <version>3.1.0.RELEASE</version>
-</dependency>
+    </dependency>
 	</dependencies>
 	
 	<build>

@@ -15,5 +15,5 @@ import lombok.Data;
 public class Author extends BaseEntity{
 	
 	@OneToOne(cascade = CascadeType.ALL)
-	public AppUser appUser;
+	private AppUser appUser;
 }

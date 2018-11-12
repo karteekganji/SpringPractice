@@ -3,14 +3,17 @@ package com.spring.utils;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+import lombok.Data;
+
+@Data
 @JsonInclude(Include.NON_NULL)
 public class GeneralResponse {
 
-	public String status;
+	private String status;
 
-	public Object payLoad;
+	private Object payLoad;
 
-	public String errorMessage;
+	private String errorMessage;
 
 	public GeneralResponse(final String status) {
 		this.status = status;

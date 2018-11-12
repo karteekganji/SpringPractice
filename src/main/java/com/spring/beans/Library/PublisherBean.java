@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class PublisherBean {
-	public Long id;
-	public String name;
-	public String description;
+	private Long id;
+	private String name;
+	private String description;
 }
