@@ -100,7 +100,7 @@ public class LibraryController {
 	//Library API's
 	
 	@PostMapping("/add-library")
-	public GeneralResponse addLibrary(@RequestBody LibraryBean bean	){
+	public GeneralResponse addLibrary(@RequestBody LibraryBean bean){
 		return new GeneralResponse (Constants.RESPONSE_SUCCESS, this.libraryService.addLibrary(bean));
 	}
 	
@@ -115,7 +115,7 @@ public class LibraryController {
 	}
 
 	@DeleteMapping("/delete-library/{Id}")
-	public GeneralResponse deleteLibrary(@RequestBody LibraryBean bean	){
+	public GeneralResponse deleteLibrary(@RequestBody LibraryBean bean){
 		return new GeneralResponse (Constants.RESPONSE_SUCCESS, this.libraryService.deleteLibrary(bean));
 	}
 	
@@ -138,7 +138,7 @@ public class LibraryController {
 	}
 
 	@PostMapping("/delete-book/{Id}")
-	public GeneralResponse deleteBook(@RequestBody BooksBean bean	){
+	public GeneralResponse deleteBook(@RequestBody BooksBean bean){
 		return new GeneralResponse (Constants.RESPONSE_SUCCESS, this.libraryService.deleteBook(bean));
 	}
 	

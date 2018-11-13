@@ -223,7 +223,7 @@ public class UserService {
 		return cities;
 	}
 
-	public UserActivityBean userAddingBookToCart(UserActivityBean bean) {
+	public UserActivity userAddingBookToCart(UserActivityBean bean) {
 		List<LibraryInfo> infos = this.libraryInfoRepo.findByLibraryId(bean.getLibraryId());
 		List<Long> bookId = new ArrayList<>();
 		infos.forEach(a -> bookId.add(a.getBook().getId()));
@@ -236,6 +236,11 @@ public class UserService {
 			Assert.isTrue(bookId.contains(book.getId()), "Selected Book is not available in this library");
 			libraryInfo = this.libraryInfoRepo.findByLibraryIdAndBookId(bean.getLibraryId(), book.getId());
 			activity = this.userActivityRepo.findByAppUserIdAndBookId(bean.getAppUserId(), book.getId());
+			Integer sum = this.userActivityRepo.sumOfBooks(bean.getAppUserId());
+			if (sum == null) {
+				sum =0;
+			}
+			Assert.isTrue(sum <= 5 || booksBean.getCopies()+sum <= 5, "Only 5 books are alloweded per User");
 			Integer copies = libraryInfo.getCopies();
 
 			if (activity == null) {
@@ -264,12 +269,12 @@ public class UserService {
 			}
 			activity.setCopies(booksBean.getCopies());
 			activity.setBook(book);
+			AppUser appUser = this.userRepository.findOne(bean.getAppUserId());
+			activity.setAppUser(appUser);
+			Library library = this.libraryRepo.findOne(bean.getLibraryId());
+			activity.setLibrary(library);
+			this.userActivityRepo.save(activity);
 		}
-		AppUser appUser = this.userRepository.findOne(bean.getAppUserId());
-		activity.setAppUser(appUser);
-		Library library = this.libraryRepo.findOne(bean.getLibraryId());
-		activity.setLibrary(library);
-		this.userActivityRepo.save(activity);
-		return bean;
+		return activity;
 	}
 }
