@@ -26,7 +26,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(value = NullPointerException.class)
 	public GeneralResponse handleNullPointerException(final NullPointerException e) {
 		final String errorMessage = e.getMessage();
-		logger.error("error in NullPointerException :: " + errorMessage);
+		logger.error("error in handleNullPointerException :: " + errorMessage);
 		e.printStackTrace();
 		return new GeneralResponse(Constants.RESPONSE_FAILURE, errorMessage);
 	}

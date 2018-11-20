@@ -23,6 +23,8 @@ public interface AppUserRepo extends JpaRepository<AppUser, Long> {
 	List<AppUser> findByIsActiveTrue();
 	
 	List<AppUser> findByIsActiveFalse();
+	
+	AppUser findByAuth(String auth);
 
 	
 }

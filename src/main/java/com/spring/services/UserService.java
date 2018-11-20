@@ -140,7 +140,8 @@ public class UserService {
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 		if (passwordEncoder.matches(bean.getPassword(), user.getPassword())) {
-			user.setAuth(PracticeUtils.RandomStrInt());
+			String authoToken = PracticeUtils.generateUUID();
+			user.setAuth(authoToken);
 			this.userRepository.save(user);
 			List<Library> list = this.libraryRepo.findByCityCityCode(bean.getCityCode());
 			List<LibraryBean> beans = new ArrayList<>();
