@@ -53,6 +53,8 @@ public class UserService {
 	private BooksRepo booksRepo;
 	@Autowired
 	private UserActivityRepo userActivityRepo;
+	@Autowired 
+	PracticeUtils practiceUtils;
 
 	public List<AppUser> getAllUsers() {
 
@@ -140,7 +142,7 @@ public class UserService {
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 		if (passwordEncoder.matches(bean.getPassword(), user.getPassword())) {
-			String authoToken = PracticeUtils.generateUUID();
+			String authoToken = this.practiceUtils.generateUUID();
 			user.setAuth(authoToken);
 			this.userRepository.save(user);
 			List<Library> list = this.libraryRepo.findByCityCityCode(bean.getCityCode());

@@ -31,7 +31,6 @@ public class AppUser extends BaseEntity {
 	private String mobileNumber;
 	@JsonIgnore
 	private String password;
-	@JsonIgnore
 	private String auth;
 	private String gender;
 	private String city;
