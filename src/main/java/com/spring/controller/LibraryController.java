@@ -40,7 +40,7 @@ public class LibraryController {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.signUp(bean));
 	}
 
-	// Create a User
+	// User Login
 	@PostMapping("/login")
 	public GeneralResponse login(@RequestBody AppUserBean bean) {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.login(bean));
@@ -105,8 +105,8 @@ public class LibraryController {
 	}
 	
 	@GetMapping("/get-all-library")
-	public GeneralResponse getAllLibrarys(@RequestParam(name = "cityCode", required = false) String cityCode){
-		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.libraryService.getAllLibrarys(cityCode));
+	public GeneralResponse getAllLibrarys(@RequestParam(name = "cityName", required = false) String cityName){
+		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.libraryService.getAllLibrarys(cityName));
 	}
 
 	@PostMapping("/add-category")

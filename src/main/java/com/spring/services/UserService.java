@@ -116,7 +116,7 @@ public class UserService {
 		user.setName(bean.getName());
 		user.setEmail(bean.getEmail());
 		user.setMobileNumber(bean.getMobileNumber());
-		City city = this.cityRepo.findByCityCode(bean.getCityCode());
+		City city = this.cityRepo.findByCityName(bean.getCityName());
 		if (PracticeUtils.isNotEmpty(city)) {
 			user.setCity(city.getCityName());
 		} else {

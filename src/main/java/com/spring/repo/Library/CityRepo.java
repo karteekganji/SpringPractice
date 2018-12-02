@@ -9,5 +9,6 @@ import com.spring.model.library.City;
 public interface CityRepo extends JpaRepository<City, Long>{
 
 	City findByCityCode(String code);
+	City findByCityName(String name);
 	
 }

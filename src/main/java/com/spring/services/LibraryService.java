@@ -74,10 +74,10 @@ public class LibraryService {
 
 	}
 
-	public List<LibraryBean> getAllLibrarys(String cityCode) {
+	public List<LibraryBean> getAllLibrarys(String cityName) {
 		List<Library> libraries;
-		if (cityCode != null) {
-			libraries = this.libraryRepo.findByCityCityCode(cityCode);
+		if (cityName != null) {
+			libraries = this.libraryRepo.findByCityCityName(cityName);
 		} else {
 			libraries = this.libraryRepo.findAll();
 		}
@@ -86,7 +86,7 @@ public class LibraryService {
 			LibraryBean bean = new LibraryBean();
 			bean.setId(library.getId());
 			bean.setName(library.getName());
-			bean.setCityName(library.getCity().getCityName());
+			bean.setAddress(library.getAddress());
 			beans.add(bean);
 		}
 
