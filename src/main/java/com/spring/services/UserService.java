@@ -145,7 +145,7 @@ public class UserService {
 			String authoToken = this.practiceUtils.generateUUID();
 			user.setAuth(authoToken);
 			this.userRepository.save(user);
-			List<Library> list = this.libraryRepo.findByCityCityCode(bean.getCityCode());
+			List<Library> list = this.libraryRepo.findByCityCityName(bean.getCityName());
 			List<LibraryBean> beans = new ArrayList<>();
 			for (Library library : list) {
 				LibraryBean bean2 = new LibraryBean();
