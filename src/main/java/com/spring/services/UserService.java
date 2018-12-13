@@ -164,6 +164,15 @@ public class UserService {
 		}
 	}
 
+	public String logout(String auth){
+		Assert.notNull(auth,"No user selected");
+		AppUser appUser = this.userRepository.findByAuth(auth);
+		Assert.notNull(appUser, "Already User Logouted");
+		appUser.setAuth(null);
+		this.userRepository.save(appUser);
+		return "Logout Successfull";
+	}
+	
 	public String deleteUser(Long userId) {
 		final AppUser user = this.userRepository.findOne(userId);
 		Assert.notNull(user, "No User found with the given userId");

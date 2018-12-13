@@ -45,7 +45,10 @@ public class LibraryController {
 	public GeneralResponse login(@RequestBody AppUserBean bean) {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.login(bean));
 	}
-
+	@PostMapping("/logout")
+	public GeneralResponse logout(@RequestParam(name = "auth", required = false) String auth) {
+		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.logout(auth));
+	}
 	// Get a Single User
 	@GetMapping("/user/{userId}")
 	public GeneralResponse getUser(@PathVariable Long userId) {
