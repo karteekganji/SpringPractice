@@ -145,18 +145,7 @@ public class UserService {
 			String authoToken = this.practiceUtils.generateUUID();
 			user.setAuth(authoToken);
 			this.userRepository.save(user);
-			List<Library> list = this.libraryRepo.findByCityCityName(bean.getCityName());
-			List<LibraryBean> beans = new ArrayList<>();
-			for (Library library : list) {
-				LibraryBean bean2 = new LibraryBean();
-				bean2.setName(library.getName());
-				bean2.setAddress(library.getAddress());
-				bean2.setId(library.getId());
-				beans.add(bean2);
-			}
-			beans.sort((a, b) -> a.getId().compareTo(b.getId()));
 			TreeMap<String, Object> map = new TreeMap<String, Object>();
-			map.put("libraries", beans);
 			map.put("userDetails", user);
 			return map;
 		} else {
