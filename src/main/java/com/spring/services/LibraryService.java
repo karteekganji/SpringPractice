@@ -1,7 +1,9 @@
 package com.spring.services;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -75,6 +77,8 @@ public class LibraryService {
 	}
 
 	public List<LibraryBean> getAllLibrarys(String cityName) {
+		City city = this.cityRepo.findByCityName(cityName);
+		Assert.notNull(city, "Selected city is not available");
 		List<Library> libraries;
 		if (cityName != null) {
 			libraries = this.libraryRepo.findByCityCityName(cityName);
@@ -254,17 +258,21 @@ public class LibraryService {
 		return info;
 	}
 
-	public List<BooksBean> LibraryBooks(Long id) {
+	public Map<String, Object> LibraryBooks(Long id) {
 		List<LibraryInfo> infos = this.libraryInfoRepo.findByLibraryId(id);
 		List<BooksBean> beans = new ArrayList<BooksBean>();
+		Library library = this.libraryRepo.getOne(id);
+		Map<String, Object> map = new HashMap<>();
 		for (LibraryInfo libraryInfo : infos) {
 			Books book = this.booksRepo.findOne(libraryInfo.getBook().getId());
 			BooksBean  booksBean = bookInfos(book);
 			booksBean.setCopies(libraryInfo.getCopies());
 			beans.add(booksBean);
 		}
+		map.put("libraryDetails", library.getName());
+		map.put("bookDetails", beans);
 		beans.sort((a, b) -> a.getTitle().compareTo(b.getTitle()));
-		return beans;
+		return map;
 	}
 	
 }

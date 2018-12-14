@@ -159,7 +159,7 @@ public class UserService {
 		Assert.notNull(appUser, "Already User Logouted");
 		appUser.setAuth(null);
 		this.userRepository.save(appUser);
-		return "Logout Successfull";
+		return "Logged out Successfull";
 	}
 	
 	public String deleteUser(Long userId) {
