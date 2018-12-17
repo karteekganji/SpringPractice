@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.spring.enums.Role;
 import com.spring.model.library.AppUser;
 
 @Repository
@@ -25,6 +26,8 @@ public interface AppUserRepo extends JpaRepository<AppUser, Long> {
 	List<AppUser> findByIsActiveFalse();
 	
 	AppUser findByAuth(String auth);
+	
+	List<AppUser> findByRole(Role role);
 
 	
 }

@@ -164,10 +164,18 @@ public class LibraryService {
 		bean.setTitle(book.getTitle());
 		bean.setDescription(book.getDescription());
 		bean.setPages(book.getPages());
-		bean.setCategoryName(book.getCategory().getName());
-		bean.setAuthorName(book.getAuthor().getAppUser().getName());
-		bean.setLanguageName(book.getLanguage().getName());
-		bean.setPublisherName(book.getPublisher().getName());
+		if (book.getCategory() != null) {
+			bean.setCategoryName(book.getCategory().getName());
+		}
+		if (book.getAuthor() != null) {
+			bean.setAuthorName(book.getAuthor().getAppUser().getName());
+		}
+		if (book.getLanguage() != null) {
+			bean.setLanguageName(book.getLanguage().getName());
+		}
+		if (book.getPublisher() != null) {
+			bean.setPublisherName(book.getPublisher().getName());
+		}
 		return bean;
 	}
 
@@ -265,7 +273,7 @@ public class LibraryService {
 		Map<String, Object> map = new HashMap<>();
 		for (LibraryInfo libraryInfo : infos) {
 			Books book = this.booksRepo.findOne(libraryInfo.getBook().getId());
-			BooksBean  booksBean = bookInfos(book);
+			BooksBean booksBean = bookInfos(book);
 			booksBean.setCopies(libraryInfo.getCopies());
 			beans.add(booksBean);
 		}
@@ -274,5 +282,5 @@ public class LibraryService {
 		beans.sort((a, b) -> a.getTitle().compareTo(b.getTitle()));
 		return map;
 	}
-	
+
 }
