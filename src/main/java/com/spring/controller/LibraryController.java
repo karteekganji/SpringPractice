@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,6 +28,7 @@ import com.spring.utils.GeneralResponse;
 
 @CrossOrigin
 @RestController
+@RequestMapping("/api")
 public class LibraryController {
 
 	@Autowired
@@ -33,7 +36,7 @@ public class LibraryController {
 
 	@Autowired
 	LibraryService libraryService;
-	
+
 	// Create a User
 	@PostMapping("/signup")
 	public GeneralResponse addUser(@RequestBody AppUserBean bean) {
@@ -45,31 +48,29 @@ public class LibraryController {
 	public GeneralResponse login(@RequestBody AppUserBean bean) {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.login(bean));
 	}
+
 	@PostMapping("/logout")
-	public GeneralResponse logout(@RequestParam(name = "auth", required = false) String auth) {
+	public GeneralResponse logout(@RequestHeader("Auth-Token") final String authToken,
+			@RequestParam(name = "auth", required = false) String auth) {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.logout(auth));
 	}
+
 	// Get a Single User
 	@GetMapping("/user/{userId}")
-	public GeneralResponse getUser(@PathVariable Long userId) {
+	public GeneralResponse getUser(@PathVariable Long userId, @RequestHeader("Auth-Token") final String authToken) {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.getUser(userId));
 	}
 
 	// Get All Users
 	@GetMapping("/users")
-	public GeneralResponse getAllUsers() {
+	public GeneralResponse getAllUsers(@RequestHeader("Auth-Token") final String authToken) {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.getAllUsers());
 	}
 
 	// Delete a User
 	@DeleteMapping("/user/{userId}")
-	public GeneralResponse deleteUser(@PathVariable Long userId) {
+	public GeneralResponse deleteUser(@PathVariable Long userId, @RequestHeader("Auth-Token") final String authToken) {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.deleteUser(userId));
-	}
-	// Create a User
-	@PostMapping("/add-language")
-	public GeneralResponse saveOrUpdateLanguage(@RequestBody LanguageBean bean) {
-		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.saveOrUpdateLanguage(bean));
 	}
 
 	// Get All Languages
@@ -78,88 +79,48 @@ public class LibraryController {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.getAllLanguages());
 	}
 
-	// Delete single Languages
-	@PostMapping("/delete-language/{languageId}")
-	public GeneralResponse deleteLanguage(@PathVariable Long languageId) {
-		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.deleteLanguage(languageId));
-	}
-
 	// Get a Single Language
 	@GetMapping("/get-language/{langId}")
 	public GeneralResponse getLanguage(@PathVariable Long langId) {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.getLanguage(langId));
 	}
-	
-	@PostMapping("/add-city")
-	public GeneralResponse addCity(@RequestBody CityBean bean){
-		return new GeneralResponse (Constants.RESPONSE_SUCCESS, this.userService.addCity(bean));
-	}
-	
+
 	@GetMapping("/get-cities")
-	public GeneralResponse getCities(){
-		return new GeneralResponse (Constants.RESPONSE_SUCCESS, this.userService.getCities());
+	public GeneralResponse getCities() {
+		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.getCities());
 	}
-	
-	//Library API's
-	
-	@PostMapping("/add-library")
-	public GeneralResponse addLibrary(@RequestBody LibraryBean bean){
-		return new GeneralResponse (Constants.RESPONSE_SUCCESS, this.libraryService.addLibrary(bean));
-	}
-	
+
 	@GetMapping("/get-all-library")
-	public GeneralResponse getAllLibrarys(@RequestParam(name = "cityName", required = false) String cityName){
+	public GeneralResponse getAllLibrarys(@RequestParam(name = "cityName", required = false) String cityName,
+			@RequestHeader("Auth-Token") final String authToken) {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.libraryService.getAllLibrarys(cityName));
 	}
 
-	@PostMapping("/add-category")
-	public GeneralResponse addLibrary(@RequestBody CategoryBean bean) {
-		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.libraryService.addCategory(bean));
-	}
-
-	@DeleteMapping("/delete-library/{Id}")
-	public GeneralResponse deleteLibrary(@RequestBody LibraryBean bean){
-		return new GeneralResponse (Constants.RESPONSE_SUCCESS, this.libraryService.deleteLibrary(bean));
-	}
-	
-	@PostMapping("/add-book")
-	public GeneralResponse addBook(@RequestBody BooksBean bean){
-		return new GeneralResponse (Constants.RESPONSE_SUCCESS, this.libraryService.addBook(bean));
-	}
 	@GetMapping("/get-book/{Id}")
-	public GeneralResponse getBook(@PathVariable Long Id){
+	public GeneralResponse getBook(@PathVariable Long Id, @RequestHeader("Auth-Token") final String authToken) {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.libraryService.getBook(Id));
 	}
+
 	@GetMapping("/get-all-books")
-	public GeneralResponse getAllBooks(){
+	public GeneralResponse getAllBooks(@RequestHeader("Auth-Token") final String authToken) {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.libraryService.getAllBooks());
 	}
-	
+
 	@GetMapping("/search-books")
-	public GeneralResponse searchBook(@RequestParam(name = "langaugeId", required = false) Long languageId, @RequestParam(name = "categoryId", required = false) Long categoryId ){
-		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.libraryService.searchBooks(languageId,categoryId));
+	public GeneralResponse searchBook(@RequestParam(name = "langaugeId", required = false) Long languageId,
+			@RequestParam(name = "categoryId", required = false) Long categoryId,
+			@RequestHeader("Auth-Token") final String authToken) {
+		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.libraryService.searchBooks(languageId, categoryId));
 	}
 
-	@PostMapping("/delete-book/{Id}")
-	public GeneralResponse deleteBook(@RequestBody BooksBean bean){
-		return new GeneralResponse (Constants.RESPONSE_SUCCESS, this.libraryService.deleteBook(bean));
-	}
-	
-	@PostMapping("/add-publisher")
-	public GeneralResponse addPublisher(@RequestBody PublisherBean bean){
-		return new GeneralResponse (Constants.RESPONSE_SUCCESS, this.libraryService.addPublisher(bean));
-	}
-	
-	@PostMapping("/add-books-tolibrary") 
-	public GeneralResponse addBooksToLibrary(@RequestBody LibraryInfoBean bean){
-		return new GeneralResponse (Constants.RESPONSE_SUCCESS, this.libraryService.addBooksToLibrary(bean));
-	}
 	@GetMapping("/library-books/{Id}")
-	public GeneralResponse getLibraryBooks(@PathVariable Long Id){
-		return new GeneralResponse (Constants.RESPONSE_SUCCESS, this.libraryService.LibraryBooks(Id));
+	public GeneralResponse getLibraryBooks(@PathVariable Long Id, @RequestHeader("Auth-Token") final String authToken) {
+		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.libraryService.LibraryBooks(Id));
 	}
+
 	@PostMapping("/books-adding-tocart")
-	public GeneralResponse userActivity(@RequestBody UserActivityBean bean){
-		return new GeneralResponse (Constants.RESPONSE_SUCCESS, this.userService.userAddingBookToCart(bean));
+	public GeneralResponse userActivity(@RequestBody UserActivityBean bean,
+			@RequestHeader("Auth-Token") final String authToken) {
+		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.userAddingBookToCart(bean));
 	}
 }

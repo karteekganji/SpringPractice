@@ -13,7 +13,6 @@ import com.spring.beans.Library.AppUserBean;
 import com.spring.beans.Library.BooksSubBean;
 import com.spring.beans.Library.CityBean;
 import com.spring.beans.Library.LanguageBean;
-import com.spring.beans.Library.LibraryBean;
 import com.spring.beans.Library.UserActivityBean;
 import com.spring.enums.Role;
 import com.spring.model.library.AppUser;
@@ -75,7 +74,37 @@ public class UserService {
 		 */
 
 	}
+	public AppUser getLoggedInAppUser(final String xAuth) throws Exception {
+		AppUser  appUser = this.userRepository
+				.findByAuth(xAuth);
+		return this.isLoggedIn(xAuth) ? appUser : null;
+	}
+	
+	public boolean isLoggedIn(final String xAuth) throws Exception {
+		boolean isLoggedIn = false;
 
+		final AppUser appUser = this.userRepository.findByAuth(
+				xAuth/*
+				 * PlatformUtils.getHashedString(xAuthToken)
+				 */);
+		if (appUser != null){
+			isLoggedIn = true;
+			/** @NOTE : Use below code for implementing session expiry time */
+			// if (loginData.expiryTime > System.currentTimeMillis()) {
+			// loginData.expiryTime = System.currentTimeMillis() +
+			// Constants.SESSION_EXPIRY_TIME;
+			// isLoggedIn = true;
+			// } else {
+			// loginData.loginSessionStatus = LoginSessionStatus.EXPIRED;
+			// }
+			// TODO : Need to solve
+			// org.springframework.orm.ObjectOptimisticLockingFailureException
+			// by removing below comment
+			// this.loginDataRepository.saveAndFlush(loginData);
+		}
+		return isLoggedIn;
+	}
+	
 	public AppUser getUser(Long userId) {
 
 		AppUser user = this.userRepository.findOne(userId);
