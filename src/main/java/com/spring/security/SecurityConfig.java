@@ -29,7 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	public void configure(final WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/signup", "/login","/logout","/get-cities");
+		web.ignoring().antMatchers("/api/signup", "/api/login","/api/logout","/api/get-cities");
 	}
 
 	@Override
