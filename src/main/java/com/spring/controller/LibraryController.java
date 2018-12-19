@@ -50,9 +50,8 @@ public class LibraryController {
 	}
 
 	@PostMapping("/logout")
-	public GeneralResponse logout(@RequestHeader("Auth-Token") final String authToken,
-			@RequestParam(name = "auth", required = false) String auth) {
-		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.logout(auth));
+	public GeneralResponse logout(@RequestHeader("Auth-Token") final String authToken) {
+		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.logout(authToken));
 	}
 
 	// Get a Single User
@@ -93,7 +92,8 @@ public class LibraryController {
 	@GetMapping("/get-all-library")
 	public GeneralResponse getAllLibrarys(@RequestParam(name = "cityName", required = false) String cityName,
 			@RequestHeader("Auth-Token") final String authToken) {
-		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.libraryService.getAllLibrarys(cityName));
+		System.out.println("Inside controller");
+		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.libraryService.getAllLibrarys(cityName,authToken));
 	}
 
 	@GetMapping("/get-book/{Id}")

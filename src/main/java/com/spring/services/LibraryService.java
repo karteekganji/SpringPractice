@@ -15,6 +15,7 @@ import com.spring.beans.Library.CategoryBean;
 import com.spring.beans.Library.LibraryBean;
 import com.spring.beans.Library.LibraryInfoBean;
 import com.spring.beans.Library.PublisherBean;
+import com.spring.model.library.AppUser;
 import com.spring.model.library.Author;
 import com.spring.model.library.Books;
 import com.spring.model.library.Category;
@@ -52,6 +53,9 @@ public class LibraryService {
 	LibraryInfoRepo libraryInfoRepo;
 	@Autowired
 	AuthorRepo authorRepo;
+	
+	@Autowired
+	UserService userService; 
 
 	public Library addLibrary(LibraryBean bean) {
 		Library library;
@@ -76,9 +80,11 @@ public class LibraryService {
 
 	}
 
-	public List<LibraryBean> getAllLibrarys(String cityName) {
-		City city = this.cityRepo.findByCityName(cityName);
-		Assert.notNull(city, "Selected city is not available");
+	public List<LibraryBean> getAllLibrarys(String cityName,String authToken) {
+		if (cityName !=null) {
+			City city = this.cityRepo.findByCityName(cityName);
+			Assert.notNull(city, "Selected city is not available");
+		}
 		List<Library> libraries;
 		if (cityName != null) {
 			libraries = this.libraryRepo.findByCityCityName(cityName);

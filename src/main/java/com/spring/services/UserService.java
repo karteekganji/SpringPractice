@@ -74,13 +74,13 @@ public class UserService {
 		 */
 
 	}
-	public AppUser getLoggedInAppUser(final String xAuth) throws Exception {
+	public AppUser getLoggedInAppUser(final String xAuth){
 		AppUser  appUser = this.userRepository
 				.findByAuth(xAuth);
 		return this.isLoggedIn(xAuth) ? appUser : null;
 	}
 	
-	public boolean isLoggedIn(final String xAuth) throws Exception {
+	public boolean isLoggedIn(final String xAuth){
 		boolean isLoggedIn = false;
 
 		final AppUser appUser = this.userRepository.findByAuth(
@@ -182,9 +182,9 @@ public class UserService {
 		}
 	}
 
-	public String logout(String auth){
-		Assert.notNull(auth,"No user selected");
-		AppUser appUser = this.userRepository.findByAuth(auth);
+	public String logout(String authToken){
+		Assert.notNull(authToken,"No user selected");
+		AppUser appUser = this.userRepository.findByAuth(authToken);
 		Assert.notNull(appUser, "Already User Logouted");
 		appUser.setAuth(null);
 		this.userRepository.save(appUser);

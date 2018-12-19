@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.boot.CommandLineRunner;
 import com.spring.enums.Role;
@@ -13,7 +14,8 @@ import com.spring.repo.Library.AppUserRepo;
 import com.spring.utils.Constants;
 import com.spring.utils.PracticeUtils;
 
-@SpringBootApplication
+// Enable this if Security is not required
+@SpringBootApplication/*(exclude = {SecurityAutoConfiguration.class })*/
 @EnableJpaAuditing
 public class PracticeSpringBootApplication implements CommandLineRunner{
 	@Autowired

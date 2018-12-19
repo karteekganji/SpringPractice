@@ -1,6 +1,8 @@
 package com.spring.model.library;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -13,6 +15,7 @@ import javax.validation.constraints.NotNull;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -27,7 +30,7 @@ import lombok.Data;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(value = { "createdAt", "updatedAt" })
-public class AppUser extends BaseEntity implements Authentication {
+public class AppUser extends BaseEntity implements Authentication{
 
 	@NotNull
 	private String name;
@@ -47,37 +50,33 @@ public class AppUser extends BaseEntity implements Authentication {
 	@JsonIgnore
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		return null;
+		final List<GrantedAuthority> list = new ArrayList<GrantedAuthority>();
+		list.add(new SimpleGrantedAuthority(this.role.toString()));
+		return list;
 	}
 	@JsonIgnore
 	@Override
 	public Object getCredentials() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.password;
 	}
 	@JsonIgnore
 	@Override
 	public Object getDetails() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.email;
 	}
 	@JsonIgnore
 	@Override
 	public Object getPrincipal() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.email;
 	}
 	@JsonIgnore
 	@Override
 	public boolean isAuthenticated() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 	@JsonIgnore
 	@Override
 	public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
-		// TODO Auto-generated method stub
 		
 	}
 

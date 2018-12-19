@@ -10,12 +10,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.google.gson.Gson;
 import com.spring.model.library.AppUser;
 import com.spring.services.UserService;
-import com.spring.utils.Constants;
 import com.spring.utils.GeneralResponse;
 
 @CrossOrigin
@@ -35,27 +38,42 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 			final FilterChain filterChain) throws ServletException, IOException {
 
 		logger.info("  ---  url " + request.getRequestURL());
-		final String xAuth = request.getHeader("Auth-Token");
+		final String authToken = request.getHeader("Auth-Token");
 
 		try {
-			if (!this.isValid(xAuth)) {
+			if (!this.isValid(authToken)) {
 				throw new SecurityException("Authentication failed, please login to continue.");
 			}
 
-			final AppUser appUser = this.userService.getLoggedInAppUser(xAuth);
-
+			final AppUser appUser = this.userService.getLoggedInAppUser(authToken);
+			
 			// throw exception if appUser is null
-			if (appUser == null) {
-				throw new AuthenticationException("Authentication failed, please login to continue.");
-			}
+						if (appUser == null) {
+							throw new AuthenticationException("Authentication failed, please login to continue.");
+						}
 
-		} catch (SecurityException | AuthenticationException e) {
-			new GeneralResponse(Constants.RESPONSE_FAILURE, "Something went wrong. Please try again in few moments");
-			e.printStackTrace();
-		} catch (Exception e) {
-			new GeneralResponse(Constants.RESPONSE_FAILURE, "Something went wrong. Please try again in few moments");
-			e.printStackTrace();
-		}
+						// Create our Authentication and let Spring know about it
+						final Authentication auth = new DemoAuthenticationToken(appUser.getAuthorities(), appUser, appUser.getId());
+						auth.setAuthenticated(true);
+						SecurityContextHolder.getContext().setAuthentication(auth);
+						filterChain.doFilter(request, response);
+
+					} catch (SecurityException | AuthenticationException se) {
+						final GeneralResponse genericResponse = new GeneralResponse(se.getMessage());
+						response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+						response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+						response.getWriter().write(new Gson().toJson(genericResponse));
+						// logger.error(se);
+						se.printStackTrace();
+					} catch (final Exception e) {
+						final GeneralResponse genericResponse = new GeneralResponse(
+								"Something went wrong. Please try again in few moments");
+						response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+						response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+						response.getWriter().write(new Gson().toJson(genericResponse));
+						// logger.error(e);
+						e.printStackTrace();
+					}
 
 	}
 
