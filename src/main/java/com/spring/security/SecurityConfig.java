@@ -55,14 +55,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Override
 	public void configure(final WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/","/api/signup", "/api/login","/api/logout","/api/get-cities");
+		web.ignoring().antMatchers("/", "/api/signup", "/api/login", "/api/logout", "/api/get-cities",
+				// -- swagger ui
+				"/v2/api-docs", "/swagger-resources", "/swagger-resources/**", "/configuration/ui",
+				"/configuration/security", "/swagger-ui.html", "/webjars/**");
 	}
 
 	@Override
 	protected void configure(final HttpSecurity http) throws Exception {
 		http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
 		http.csrf().disable().authorizeRequests()
-//				.antMatchers("/api/admin/**").hasAnyAuthority("ADMIN")
+				.antMatchers("/api/admin/**").hasAnyAuthority("ADMIN")
 				.antMatchers("/api/**").hasAnyAuthority("ADMIN", "USER","AUTHOR")
 				.anyRequest().authenticated().and()
 				.addFilterBefore(corsFilter(), ChannelProcessingFilter.class)

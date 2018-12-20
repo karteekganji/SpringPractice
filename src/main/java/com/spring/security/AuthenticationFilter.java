@@ -19,6 +19,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.google.gson.Gson;
 import com.spring.model.library.AppUser;
 import com.spring.services.UserService;
+import com.spring.utils.Constants;
 import com.spring.utils.GeneralResponse;
 
 @CrossOrigin
@@ -66,7 +67,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 						// logger.error(se);
 						se.printStackTrace();
 					} catch (final Exception e) {
-						final GeneralResponse genericResponse = new GeneralResponse(
+						final GeneralResponse genericResponse = new GeneralResponse(Constants.RESPONSE_FAILURE,
 								"Something went wrong. Please try again in few moments");
 						response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
 						response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

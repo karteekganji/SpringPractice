@@ -14,6 +14,8 @@ public class GeneralResponse {
 	private Object payLoad;
 
 	private String errorMessage;
+	
+	private Exception exception;
 
 	public GeneralResponse(final String status) {
 		this.status = status;
@@ -27,5 +29,9 @@ public class GeneralResponse {
 	public GeneralResponse(final String status, final String errorMessage) {
 		this.status = status;
 		this.errorMessage = errorMessage;
+	}
+	public GeneralResponse(final String status, final Exception errorMessage) {
+		this.status = status;
+		this.exception = errorMessage;
 	}
 }
