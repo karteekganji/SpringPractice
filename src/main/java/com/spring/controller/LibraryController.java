@@ -66,11 +66,6 @@ public class LibraryController {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.getAllUsers());
 	}
 
-	// Delete a User
-	@DeleteMapping("/user/{userId}")
-	public GeneralResponse deleteUser(@PathVariable Long userId, @RequestHeader("Auth-Token") final String authToken) {
-		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.deleteUser(userId));
-	}
 
 	// Get All Languages
 	@GetMapping("/get-all-languages")
@@ -92,7 +87,6 @@ public class LibraryController {
 	@GetMapping("/get-all-library")
 	public GeneralResponse getAllLibrarys(@RequestParam(name = "cityName", required = false) String cityName,
 			@RequestHeader("Auth-Token") final String authToken) {
-		System.out.println("Inside controller");
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.libraryService.getAllLibrarys(cityName,authToken));
 	}
 

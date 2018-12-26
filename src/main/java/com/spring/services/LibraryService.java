@@ -87,7 +87,7 @@ public class LibraryService {
 		}
 		List<Library> libraries;
 		if (cityName != null) {
-			libraries = this.libraryRepo.findByCityCityName(cityName);
+			libraries = this.libraryRepo.findByCityCityNameAndIsActiveTrue(cityName);
 		} else {
 			libraries = this.libraryRepo.findAll();
 		}
@@ -117,11 +117,12 @@ public class LibraryService {
 		return this.categoryRepo.save(category);
 	}
 
-	public String deleteLibrary(LibraryBean bean) {
-		Assert.isNull(bean.getId(), "Provide Id");
-		Library lb = this.libraryRepo.findOne(bean.getId());
-		Assert.notNull(bean.getId(), "No library found");
-		lb.setIsActive(bean.getIsActive());
+	public String deleteLibrary(Long Id) {
+		Assert.notNull(Id, "Provide Library Id");
+		Library lb = this.libraryRepo.findOne(Id);
+		Assert.notNull(lb, "No library found");
+		lb.setIsActive(Boolean.FALSE);
+		this.libraryRepo.save(lb);
 		return "Library deleted successfully";
 	}
 

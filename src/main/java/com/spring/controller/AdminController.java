@@ -63,9 +63,9 @@ public class AdminController {
 	}
 
 	@DeleteMapping("/delete-library/{Id}")
-	public GeneralResponse deleteLibrary(@RequestBody LibraryBean bean,
+	public GeneralResponse deleteLibrary(@PathVariable Long Id,
 			@RequestHeader("Auth-Token") final String authToken) {
-		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.libraryService.deleteLibrary(bean));
+		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.libraryService.deleteLibrary(Id));
 	}
 
 	@PostMapping("/add-book")
@@ -89,5 +89,11 @@ public class AdminController {
 	public GeneralResponse addBooksToLibrary(@RequestBody LibraryInfoBean bean,
 			@RequestHeader("Auth-Token") final String authToken) {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.libraryService.addBooksToLibrary(bean));
+	}
+
+	// Delete a User
+	@DeleteMapping("/user/{userId}")
+	public GeneralResponse deleteUser(@PathVariable Long userId, @RequestHeader("Auth-Token") final String authToken) {
+		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.deleteUser(userId));
 	}
 }
