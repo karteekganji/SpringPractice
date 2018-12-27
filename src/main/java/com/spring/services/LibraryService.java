@@ -231,6 +231,7 @@ public class LibraryService {
 		Books book = this.booksRepo.findOne(bean.getBookId());
 		Assert.notNull(bean.getBookId(), "No Book found");
 		book.setIsActive(bean.getIsActive());
+		this.booksRepo.save(book);
 		return "Book deleted successfully";
 	}
 
