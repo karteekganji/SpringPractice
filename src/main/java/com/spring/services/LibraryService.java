@@ -75,12 +75,13 @@ public class LibraryService {
 			throw new IllegalArgumentException("Entered city Id is wrong");
 		}
 		library.setAddress(bean.getAddress());
+		library.setIsActive(bean.getIsActive());
 
 		return this.libraryRepo.save(library);
 
 	}
 
-	public List<LibraryBean> getAllLibrarys(String cityName,String authToken) {
+	public List<Library> getAllLibrarys(String cityName,String authToken) {
 		if (cityName !=null) {
 			City city = this.cityRepo.findByCityName(cityName);
 			Assert.notNull(city, "Selected city is not available");
@@ -91,17 +92,15 @@ public class LibraryService {
 		} else {
 			libraries = this.libraryRepo.findAll();
 		}
-		List<LibraryBean> beans = new ArrayList<>();
-		for (Library library : libraries) {
-			LibraryBean bean = new LibraryBean();
-			bean.setId(library.getId());
-			bean.setName(library.getName());
-			bean.setAddress(library.getAddress());
-			beans.add(bean);
-		}
-
-		beans.sort((a, b) -> a.getId().compareTo(b.getId()));
-		return beans;
+		
+		libraries.sort((a, b) -> a.getId().compareTo(b.getId()));
+		return libraries;
+	}
+	
+	public Library getLibrary(Long Id) {
+		Library library = this.libraryRepo.findOne(Id);
+		Assert.notNull(library, "No library found");
+		return library;
 	}
 
 	public Category addCategory(CategoryBean bean) {

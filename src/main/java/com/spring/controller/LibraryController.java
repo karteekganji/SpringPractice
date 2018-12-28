@@ -89,7 +89,10 @@ public class LibraryController {
 			@RequestHeader("Auth-Token") final String authToken) {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.libraryService.getAllLibrarys(cityName,authToken));
 	}
-
+	@GetMapping("get-library/{Id}")
+	public GeneralResponse getLibrary(@PathVariable Long Id, @RequestHeader("Auth-Token") final String authToken){
+		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.libraryService.getLibrary(Id));
+	}
 	@GetMapping("/get-book/{Id}")
 	public GeneralResponse getBook(@PathVariable Long Id, @RequestHeader("Auth-Token") final String authToken) {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.libraryService.getBook(Id));
