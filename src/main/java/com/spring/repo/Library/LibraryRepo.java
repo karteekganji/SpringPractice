@@ -12,4 +12,5 @@ public interface LibraryRepo extends JpaRepository<Library, Long>{
 
 	List<Library> findByCityCityCode(String cityCode);
 	List<Library> findByCityCityNameAndIsActiveTrue(String cityName);
+	List<Library> findByCityIdAndIsActiveTrue(Long cityId);
 }

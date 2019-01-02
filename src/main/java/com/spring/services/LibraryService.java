@@ -81,14 +81,14 @@ public class LibraryService {
 
 	}
 
-	public List<Library> getAllLibrarys(String cityName,String authToken) {
-		if (cityName !=null) {
-			City city = this.cityRepo.findByCityName(cityName);
+	public List<Library> getAllLibrarys(Long cityId,String authToken) {
+		if (cityId !=null) {
+			City city = this.cityRepo.findOne(cityId);
 			Assert.notNull(city, "Selected city is not available");
 		}
 		List<Library> libraries;
-		if (cityName != null) {
-			libraries = this.libraryRepo.findByCityCityNameAndIsActiveTrue(cityName);
+		if (cityId != null) {
+			libraries = this.libraryRepo.findByCityIdAndIsActiveTrue(cityId);
 		} else {
 			libraries = this.libraryRepo.findAll();
 		}

@@ -85,9 +85,9 @@ public class LibraryController {
 	}
 
 	@GetMapping("/get-all-library")
-	public GeneralResponse getAllLibrarys(@RequestParam(name = "cityName", required = false) String cityName,
+	public GeneralResponse getAllLibrarys(@RequestParam(name = "cityId", required = false) Long cityId,
 			@RequestHeader("Auth-Token") final String authToken) {
-		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.libraryService.getAllLibrarys(cityName,authToken));
+		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.libraryService.getAllLibrarys(cityId,authToken));
 	}
 	@GetMapping("get-library/{Id}")
 	public GeneralResponse getLibrary(@PathVariable Long Id, @RequestHeader("Auth-Token") final String authToken){
