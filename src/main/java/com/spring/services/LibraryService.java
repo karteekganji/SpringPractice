@@ -15,6 +15,7 @@ import com.spring.beans.Library.CategoryBean;
 import com.spring.beans.Library.LibraryBean;
 import com.spring.beans.Library.LibraryInfoBean;
 import com.spring.beans.Library.PublisherBean;
+import com.spring.enums.Role;
 import com.spring.model.library.AppUser;
 import com.spring.model.library.Author;
 import com.spring.model.library.Books;
@@ -24,6 +25,7 @@ import com.spring.model.library.Language;
 import com.spring.model.library.Library;
 import com.spring.model.library.LibraryInfo;
 import com.spring.model.library.Publisher;
+import com.spring.repo.Library.AppUserRepo;
 import com.spring.repo.Library.AuthorRepo;
 import com.spring.repo.Library.BooksRepo;
 import com.spring.repo.Library.CategoryRepo;
@@ -53,6 +55,8 @@ public class LibraryService {
 	LibraryInfoRepo libraryInfoRepo;
 	@Autowired
 	AuthorRepo authorRepo;
+	@Autowired
+	AppUserRepo appUserRepo;
 	
 	@Autowired
 	UserService userService; 
@@ -81,18 +85,23 @@ public class LibraryService {
 
 	}
 
-	public List<Library> getAllLibrarys(Long cityId,String authToken) {
-		if (cityId !=null) {
+	public List<Library> getAllLibrarys(Long cityId, String authToken) {
+		if (cityId != null) {
 			City city = this.cityRepo.findOne(cityId);
 			Assert.notNull(city, "Selected city is not available");
 		}
+		AppUser appUser = this.appUserRepo.findByAuth(authToken);
 		List<Library> libraries;
 		if (cityId != null) {
-			libraries = this.libraryRepo.findByCityIdAndIsActiveTrue(cityId);
+			if (appUser.getRole().equals(Role.ADMIN)) {
+				libraries = this.libraryRepo.findByCityId(cityId);
+			} else {
+				libraries = this.libraryRepo.findByCityIdAndIsActiveTrue(cityId);
+			}
 		} else {
 			libraries = this.libraryRepo.findAll();
 		}
-		
+
 		libraries.sort((a, b) -> a.getId().compareTo(b.getId()));
 		return libraries;
 	}
