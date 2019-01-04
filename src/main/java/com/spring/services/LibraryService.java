@@ -179,6 +179,7 @@ public class LibraryService {
 		bean.setTitle(book.getTitle());
 		bean.setDescription(book.getDescription());
 		bean.setPages(book.getPages());
+		bean.setCopies(book.getCopies());
 		if (book.getCategory() != null) {
 			bean.setCategoryName(book.getCategory().getName());
 		}else {
