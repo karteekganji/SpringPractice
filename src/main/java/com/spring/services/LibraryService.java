@@ -127,10 +127,9 @@ public class LibraryService {
 
 	public String deleteLibrary(Long Id) {
 		Assert.notNull(Id, "Provide Library Id");
-		Library lb = this.libraryRepo.findOne(Id);
-		Assert.notNull(lb, "No library found");
-		lb.setIsActive(Boolean.FALSE);
-		this.libraryRepo.save(lb);
+		Library library = this.libraryRepo.findOne(Id);
+		Assert.notNull(library, "No library found");
+		this.libraryRepo.delete(library);
 		return "Library deleted successfully";
 	}
 
@@ -179,6 +178,7 @@ public class LibraryService {
 		bean.setTitle(book.getTitle());
 		bean.setDescription(book.getDescription());
 		bean.setPages(book.getPages());
+		bean.setCopies(book.getCopies());
 		if (book.getCategory() != null) {
 			bean.setCategoryName(book.getCategory().getName());
 		}else {
