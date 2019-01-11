@@ -307,4 +307,12 @@ public class UserService {
 		}
 		return activity;
 	}
+	public String forgotPassword(String email) {
+				
+		Assert.notNull(email, "Please provide email Id");
+		AppUser appUser = this.userRepository.findByEmailIgnoreCase(email);
+		Assert.notNull(appUser, "Provided email Id does not exists");
+		
+		return "Successfull";
+	}
 }

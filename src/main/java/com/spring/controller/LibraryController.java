@@ -120,4 +120,9 @@ public class LibraryController {
 			@RequestHeader("Auth-Token") final String authToken) {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.userAddingBookToCart(bean));
 	}
+	
+	@PostMapping("/forgot-password")
+	public GeneralResponse forgotPassword(@RequestBody String email){
+		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.forgotPassword(email));
+	}
 }

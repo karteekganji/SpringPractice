@@ -34,6 +34,7 @@ public class AppUser extends BaseEntity implements Authentication{
 
 	@NotNull
 	private String name;
+	
 	private String email;
 	private String mobileNumber;
 	@JsonIgnore

@@ -28,6 +28,5 @@ public interface AppUserRepo extends JpaRepository<AppUser, Long> {
 	AppUser findByAuth(String auth);
 	
 	List<AppUser> findByRole(Role role);
-
 	
 }
