@@ -14,6 +14,8 @@ public interface AppUserRepo extends JpaRepository<AppUser, Long> {
 	List<AppUser> findEmailByIdIsNotNull();
 	
 	AppUser findByEmailIgnoreCase(String email);
+	
+	AppUser findByPasswordKey(String key);
 
 	AppUser findByMobileNumber(String mobileNumber);
 

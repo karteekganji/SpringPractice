@@ -20,6 +20,8 @@ public class AppUserBean {
 	
 	private String password;
 	
+	private String confirmPassword;
+	
 	private String Auth;
 	
 	private String cityCode;
@@ -31,5 +33,7 @@ public class AppUserBean {
 	private Boolean isActive;
 	
 	private Role role;
+	
+	private String passwordKey;
 	
 }

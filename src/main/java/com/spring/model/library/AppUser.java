@@ -43,6 +43,7 @@ public class AppUser extends BaseEntity implements Authentication{
 	private String gender;
 	private String city;
 	private Boolean isActive = Boolean.TRUE;
+	private String passwordKey;
 	
 	@NotNull
 	@Enumerated(EnumType.STRING)

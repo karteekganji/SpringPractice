@@ -21,6 +21,7 @@ import com.spring.beans.Library.LibraryBean;
 import com.spring.beans.Library.LibraryInfoBean;
 import com.spring.beans.Library.PublisherBean;
 import com.spring.beans.Library.UserActivityBean;
+import com.spring.model.library.AppUser;
 import com.spring.services.LibraryService;
 import com.spring.services.UserService;
 import com.spring.utils.Constants;
@@ -121,8 +122,13 @@ public class LibraryController {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.userAddingBookToCart(bean));
 	}
 	
-	@PostMapping("/forgot-password")
-	public GeneralResponse forgotPassword(@RequestBody String email){
-		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.forgotPassword(email));
+	@GetMapping("/forgot-password")
+	public GeneralResponse forgotPassword(@RequestParam(name = "emailId", required = true) String emailId){
+		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.forgotPassword(emailId));
+	}
+	
+	@PostMapping("/reset-password")
+	public GeneralResponse resetPassword(@RequestBody AppUserBean bean){
+		return new GeneralResponse(Constants.RESPONSE_SUCCESS,this.userService.resetPassword(bean));
 	}
 }

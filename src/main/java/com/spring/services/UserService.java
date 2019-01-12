@@ -307,12 +307,25 @@ public class UserService {
 		}
 		return activity;
 	}
-	public String forgotPassword(String email) {
-				
+	public AppUserBean forgotPassword(String email) {
+		AppUserBean bean = new AppUserBean();
 		Assert.notNull(email, "Please provide email Id");
 		AppUser appUser = this.userRepository.findByEmailIgnoreCase(email);
 		Assert.notNull(appUser, "Provided email Id does not exists");
-		
-		return "Successfull";
+		appUser.setPasswordKey(PracticeUtils.changePasswordKey());
+		this.userRepository.save(appUser);
+		bean.setPasswordKey(appUser.getPasswordKey());
+		return bean;
+	}
+
+	public String resetPassword(AppUserBean bean) {
+		Assert.notNull(bean.getPasswordKey(), "Please provide Key");
+		AppUser appUser = this.userRepository.findByPasswordKey(bean.getPasswordKey());
+		Assert.notNull(appUser, "Provided Key is invalid, Try Again");
+		appUser.setPassword(PracticeUtils.encryptPassword(bean.getPassword()));
+		Assert.isTrue(bean.getPassword().equals(bean.getConfirmPassword()),
+				"Password and Confirm password should be same");
+		this.userRepository.save(appUser);
+		return "Password changed Successfully";
 	}
 }

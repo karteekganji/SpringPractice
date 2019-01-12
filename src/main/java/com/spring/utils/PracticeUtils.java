@@ -2,6 +2,7 @@ package com.spring.utils;
 
 import java.util.UUID;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,10 @@ public class PracticeUtils {
 		return true;
 	}
 	
+	public static String changePasswordKey() {
+		return RandomStringUtils.random(8, "12345678900ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*+?");
+	}
+
 	public static String encryptPassword(final String password) {
 		final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 		return passwordEncoder.encode(password.trim());
