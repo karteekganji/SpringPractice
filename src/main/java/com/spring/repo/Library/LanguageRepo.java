@@ -15,5 +15,7 @@ public interface LanguageRepo extends JpaRepository<Language, Long>{
 	Language findByNameIgnoreCaseAndIdNot(String name, Long id);
 	
 	List<Language> findByIsActive(Boolean isDeleted);
+
+	List<Language> findByIsActiveTrue();
 	
 }

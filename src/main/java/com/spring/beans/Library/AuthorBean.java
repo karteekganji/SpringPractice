@@ -9,7 +9,6 @@ import lombok.Data;
 @JsonInclude(Include.NON_NULL)
 public class AuthorBean {
 	private Long id;
-	private String firstName;
-	private String lastName;
-	private String description;
+	private String name;
+	private AppUserBean appUser;
 }

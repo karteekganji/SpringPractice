@@ -1,6 +1,7 @@
 package com.spring.services;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -10,26 +11,33 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import com.spring.beans.Library.AppUserBean;
+import com.spring.beans.Library.AuthorBean;
 import com.spring.beans.Library.BooksSubBean;
+import com.spring.beans.Library.CategoryBean;
 import com.spring.beans.Library.CityBean;
 import com.spring.beans.Library.LanguageBean;
+import com.spring.beans.Library.PublisherBean;
 import com.spring.beans.Library.UserActivityBean;
 import com.spring.enums.Role;
 import com.spring.model.library.AppUser;
 import com.spring.model.library.Author;
 import com.spring.model.library.Books;
+import com.spring.model.library.Category;
 import com.spring.model.library.City;
 import com.spring.model.library.Language;
 import com.spring.model.library.Library;
 import com.spring.model.library.LibraryInfo;
+import com.spring.model.library.Publisher;
 import com.spring.model.library.UserActivity;
 import com.spring.repo.Library.AppUserRepo;
 import com.spring.repo.Library.AuthorRepo;
 import com.spring.repo.Library.BooksRepo;
+import com.spring.repo.Library.CategoryRepo;
 import com.spring.repo.Library.CityRepo;
 import com.spring.repo.Library.LanguageRepo;
 import com.spring.repo.Library.LibraryInfoRepo;
 import com.spring.repo.Library.LibraryRepo;
+import com.spring.repo.Library.PublisherRepo;
 import com.spring.repo.Library.UserActivityRepo;
 import com.spring.utils.PracticeUtils;
 
@@ -37,9 +45,9 @@ import com.spring.utils.PracticeUtils;
 public class UserService {
 
 	@Autowired
-	private AppUserRepo userRepository;
+	private AppUserRepo userRepo;
 	@Autowired
-	private LanguageRepo languageRepository;
+	private LanguageRepo languageRepo;
 	@Autowired
 	private CityRepo cityRepo;
 	@Autowired
@@ -54,10 +62,14 @@ public class UserService {
 	private UserActivityRepo userActivityRepo;
 	@Autowired 
 	PracticeUtils practiceUtils;
+	@Autowired
+	CategoryRepo categoryRepo;
+	@Autowired
+	PublisherRepo publisherRepo;
 
 	public List<AppUser> getAllUsers() {
 
-		List<AppUser> list = this.userRepository.findByIsActiveTrue();
+		List<AppUser> list = this.userRepo.findByIsActiveTrue();
 		list.sort((a, b) -> a.getId().compareTo(b.getId()));
 		return list;
 
@@ -75,7 +87,7 @@ public class UserService {
 
 	}
 	public AppUser getLoggedInAppUser(final String xAuth){
-		AppUser  appUser = this.userRepository
+		AppUser  appUser = this.userRepo
 				.findByAuth(xAuth);
 		return this.isLoggedIn(xAuth) ? appUser : null;
 	}
@@ -83,7 +95,7 @@ public class UserService {
 	public boolean isLoggedIn(final String xAuth){
 		boolean isLoggedIn = false;
 
-		final AppUser appUser = this.userRepository.findByAuth(
+		final AppUser appUser = this.userRepo.findByAuth(
 				xAuth/*
 				 * PlatformUtils.getHashedString(xAuthToken)
 				 */);
@@ -107,7 +119,7 @@ public class UserService {
 	
 	public AppUser getUser(Long userId) {
 
-		AppUser user = this.userRepository.findOne(userId);
+		AppUser user = this.userRepo.findOne(userId);
 		Assert.notNull(user, "No User found with the given userId");
 
 		// final UserBean bean= new UserBean();
@@ -128,17 +140,17 @@ public class UserService {
 	public AppUser signUp(AppUserBean bean) {
 		AppUser user;
 		if (bean.getAppUserId() != null) {
-			user = this.userRepository.findOne(bean.getAppUserId());
+			user = this.userRepo.findOne(bean.getAppUserId());
 			Assert.isNull(
-					this.userRepository.findByEmailIgnoreCaseAndIdNot(bean.getEmail().trim().toLowerCase(), bean.getAppUserId()),
+					this.userRepo.findByEmailIgnoreCaseAndIdNot(bean.getEmail().trim().toLowerCase(), bean.getAppUserId()),
 					"Entered email is already registered.");
-			Assert.isNull(this.userRepository.findByMobileNumberAndIdNot(bean.getMobileNumber(), bean.getAppUserId()),
+			Assert.isNull(this.userRepo.findByMobileNumberAndIdNot(bean.getMobileNumber(), bean.getAppUserId()),
 					"Entered mobile number is already registered.");
 		} else {
 			user = new AppUser();
-			Assert.isNull(this.userRepository.findByEmailIgnoreCase(bean.getEmail().trim().toLowerCase()),
+			Assert.isNull(this.userRepo.findByEmailIgnoreCase(bean.getEmail().trim().toLowerCase()),
 					"Entered email is already registered.");
-			Assert.isNull(this.userRepository.findByMobileNumber(bean.getMobileNumber()),
+			Assert.isNull(this.userRepo.findByMobileNumber(bean.getMobileNumber()),
 					"Entered mobile number is already registered.");
 			user.setPassword(PracticeUtils.encryptPassword(bean.getPassword()));
 		}
@@ -158,12 +170,12 @@ public class UserService {
 			author.setAppUser(user);
 			this.authorRepo.save(author);
 		}
-		final AppUser add = this.userRepository.save(user);
+		final AppUser add = this.userRepo.save(user);
 		return add;
 	}
 
 	public TreeMap<String, Object> login(AppUserBean bean) {
-		AppUser user = this.userRepository.findByEmailIgnoreCase(bean.getEmail());
+		AppUser user = this.userRepo.findByEmailIgnoreCase(bean.getEmail());
 		if (user == null) {
 			throw new NullPointerException("You're password or email is wrong");
 		}
@@ -173,7 +185,7 @@ public class UserService {
 		if (passwordEncoder.matches(bean.getPassword(), user.getPassword())) {
 			String authoToken = this.practiceUtils.generateUUID();
 			user.setAuth(authoToken);
-			this.userRepository.save(user);
+			this.userRepo.save(user);
 			TreeMap<String, Object> map = new TreeMap<String, Object>();
 			map.put("userDetails", user);
 			return map;
@@ -184,53 +196,53 @@ public class UserService {
 
 	public String logout(String authToken){
 		Assert.notNull(authToken,"No user selected");
-		AppUser appUser = this.userRepository.findByAuth(authToken);
+		AppUser appUser = this.userRepo.findByAuth(authToken);
 		Assert.notNull(appUser, "Already User Logouted");
 		appUser.setAuth(null);
-		this.userRepository.save(appUser);
+		this.userRepo.save(appUser);
 		return "Logged out Successfull";
 	}
 	
 	public String deleteUser(Long userId) {
-		final AppUser user = this.userRepository.findOne(userId);
+		final AppUser user = this.userRepo.findOne(userId);
 		Assert.notNull(user, "No User found with the given userId");
-		this.userRepository.delete(user);
+		this.userRepo.delete(user);
 		return "User deleted successfully";
 	}
 
 	public Language saveOrUpdateLanguage(LanguageBean bean) {
 		Language language;
 
-		if (bean.getLanguageId() != null) {
-			language = this.languageRepository.findOne(bean.getLanguageId());
+		if (bean.getId() != null) {
+			language = this.languageRepo.findOne(bean.getId());
 			Assert.notNull(language, "No Language found !!");
-			Assert.isNull(this.languageRepository.findByNameIgnoreCaseAndIdNot(bean.getName(), bean.getLanguageId()),
+			Assert.isNull(this.languageRepo.findByNameIgnoreCaseAndIdNot(bean.getName(), bean.getId()),
 					"Language already exists with the given name.");
 		} else {
 			language = new Language();
-			Assert.isNull(this.languageRepository.findByNameIgnoreCase(bean.getName()),
+			Assert.isNull(this.languageRepo.findByNameIgnoreCase(bean.getName()),
 					"Language already exists with the given name.");
 		}
 		language.setName(bean.getName());
 		language.setIsActive(bean.getIsActive());
-		return this.languageRepository.save(language);
+		return this.languageRepo.save(language);
 
 	}
 
 	public List<Language> getAllLanguages() {
-		return this.languageRepository.findByIsActive(Boolean.TRUE);
+		return this.languageRepo.findByIsActive(Boolean.TRUE);
 		// return this.languageRepository.findAll();
 	}
 
 	public String deleteLanguage(Long languageId) {
-		Language lang = this.languageRepository.findOne(languageId);
+		Language lang = this.languageRepo.findOne(languageId);
 		lang.setIsActive(Boolean.FALSE);
-		this.languageRepository.save(lang);
+		this.languageRepo.save(lang);
 		return "Language Deleted successfully";
 	}
 
 	public Language getLanguage(Long langid) {
-		return this.languageRepository.findOne(langid);
+		return this.languageRepo.findOne(langid);
 	}
 
 	public City addCity(CityBean bean) {
@@ -299,7 +311,7 @@ public class UserService {
 			}
 			activity.setCopies(booksBean.getCopies());
 			activity.setBook(book);
-			AppUser appUser = this.userRepository.findOne(bean.getAppUserId());
+			AppUser appUser = this.userRepo.findOne(bean.getAppUserId());
 			activity.setAppUser(appUser);
 			Library library = this.libraryRepo.findOne(bean.getLibraryId());
 			activity.setLibrary(library);
@@ -310,22 +322,62 @@ public class UserService {
 	public AppUserBean forgotPassword(String email) {
 		AppUserBean bean = new AppUserBean();
 		Assert.notNull(email, "Please provide email Id");
-		AppUser appUser = this.userRepository.findByEmailIgnoreCase(email);
+		AppUser appUser = this.userRepo.findByEmailIgnoreCase(email);
 		Assert.notNull(appUser, "Provided email Id does not exists");
 		appUser.setPasswordKey(PracticeUtils.changePasswordKey());
-		this.userRepository.save(appUser);
+		this.userRepo.save(appUser);
 		bean.setPasswordKey(appUser.getPasswordKey());
 		return bean;
 	}
 
 	public String resetPassword(AppUserBean bean) {
 		Assert.notNull(bean.getPasswordKey(), "Please provide Key");
-		AppUser appUser = this.userRepository.findByPasswordKey(bean.getPasswordKey());
+		AppUser appUser = this.userRepo.findByPasswordKey(bean.getPasswordKey());
 		Assert.notNull(appUser, "Provided Key is invalid, Try Again");
 		appUser.setPassword(PracticeUtils.encryptPassword(bean.getPassword()));
 		Assert.isTrue(bean.getPassword().equals(bean.getConfirmPassword()),
 				"Password and Confirm password should be same");
-		this.userRepository.save(appUser);
+		this.userRepo.save(appUser);
 		return "Password changed Successfully";
+	}
+	public HashMap<String, Object> getBooksData() {
+		HashMap<String, Object> hashMap = new HashMap<>();
+		List<Author> authors = this.authorRepo.findByAppUserRoleAndAppUserIsActiveTrue(Role.AUTHOR);
+		List<AuthorBean> authorBeans = new ArrayList<>(); 
+		for (Author author : authors) {
+			AuthorBean authorBean = new AuthorBean();
+			authorBean.setId(author.getAppUser().getId());
+			authorBean.setName(author.getAppUser().getName());
+			authorBeans.add(authorBean);
+		}
+		List<Category> categories = this.categoryRepo.findByIsActiveTrue();
+		List<CategoryBean> categoryBeans = new ArrayList<>(); 
+		for (Category category : categories) {
+			CategoryBean categoryBean = new CategoryBean();
+			categoryBean.setId(category.getId());
+			categoryBean.setName(category.getName());
+			categoryBeans.add(categoryBean);
+		}
+		List<Language> languages = this.languageRepo.findByIsActiveTrue();
+		List<LanguageBean> languageBeans = new ArrayList<>(); 
+		for (Language language : languages) {
+			LanguageBean languageBean = new LanguageBean();
+			languageBean.setId(language.getId());
+			languageBean.setName(language.getName());
+			languageBeans.add(languageBean);
+		}
+		List<Publisher> publishers = this.publisherRepo.findByIsActiveTrue();
+		List<PublisherBean> publisherBeans = new ArrayList<>(); 
+		for (Publisher publisher : publishers) {
+			PublisherBean publisherBean = new PublisherBean();
+			publisherBean.setId(publisher.getId());
+			publisherBean.setName(publisher.getName());
+			publisherBeans.add(publisherBean);
+		}
+		hashMap.put("authors", authorBeans);
+		hashMap.put("categories", categoryBeans);
+		hashMap.put("languages", languageBeans);
+		hashMap.put("publishers", publisherBeans);
+		return hashMap;
 	}
 }

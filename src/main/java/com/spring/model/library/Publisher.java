@@ -14,5 +14,6 @@ public class Publisher extends BaseEntity{
 
 	private String name;
 	private String description;
+	private Boolean isActive = Boolean.TRUE;
 	
 }

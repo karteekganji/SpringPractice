@@ -22,7 +22,7 @@ public interface AppUserRepo extends JpaRepository<AppUser, Long> {
 	AppUser findByEmailIgnoreCaseAndIdNot(String email, Long id);
 
 	AppUser findByMobileNumberAndIdNot(String mobileNumber, Long id);
-
+	
 	List<AppUser> findByIsActiveTrue();
 	
 	List<AppUser> findByIsActiveFalse();

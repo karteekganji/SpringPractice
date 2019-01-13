@@ -3,6 +3,7 @@ package com.spring.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -95,5 +96,10 @@ public class AdminController {
 	@DeleteMapping("/user/{userId}")
 	public GeneralResponse deleteUser(@PathVariable Long userId, @RequestHeader("Auth-Token") final String authToken) {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.deleteUser(userId));
+	}
+	
+	@GetMapping("/books-data")
+	public GeneralResponse booksData(@RequestHeader("Auth-Token") final String authToken){
+		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.userService.getBooksData());
 	}
 }

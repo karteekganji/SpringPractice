@@ -131,4 +131,5 @@ public class LibraryController {
 	public GeneralResponse resetPassword(@RequestBody AppUserBean bean){
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS,this.userService.resetPassword(bean));
 	}
+	
 }
