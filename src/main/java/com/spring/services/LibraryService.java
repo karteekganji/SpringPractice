@@ -179,23 +179,28 @@ public class LibraryService {
 		bean.setDescription(book.getDescription());
 		bean.setPages(book.getPages());
 		bean.setCopies(book.getCopies());
+		bean.setIsActive(book.getIsActive());
 		if (book.getCategory() != null) {
 			bean.setCategoryName(book.getCategory().getName());
+			bean.setCategoryId(book.getCategory().getId());
 		}else {
 			bean.setCategoryName("No Category");
 		}
 		if (book.getAuthor() != null) {
 			bean.setAuthorName(book.getAuthor().getAppUser().getName());
+			bean.setAuthorId(book.getAuthor().getAppUser().getId());
 		}else {
 			bean.setAuthorName("No Author");
 		}
 		if (book.getLanguage() != null) {
 			bean.setLanguageName(book.getLanguage().getName());
+			bean.setLanguageId(book.getLanguage().getId());
 		}else {
 			bean.setLanguageName("No Language");
 		}
 		if (book.getPublisher() != null) {
 			bean.setPublisherName(book.getPublisher().getName());
+			bean.setPublisherId(book.getPublisher().getId());
 		}else {
 			bean.setPublisherName("No Publisher");
 		}
