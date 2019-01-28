@@ -1,5 +1,7 @@
 package com.spring.services;
 
+import static org.mockito.Mockito.doNothing;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -153,6 +155,7 @@ public class LibraryService {
 		Category category = this.categoryRepo.findOne(bean.getCategoryId());
 		book.setCategory(category);
 		book.setCopies(bean.getCopies());
+		this.booksRepo.save(book);
 		return bookInfos(book);
 	}
 
@@ -243,8 +246,7 @@ public class LibraryService {
 		Assert.isNull(bean.getBookId(), "Provide Id");
 		Books book = this.booksRepo.findOne(bean.getBookId());
 		Assert.notNull(bean.getBookId(), "No Book found");
-		book.setIsActive(bean.getIsActive());
-		this.booksRepo.save(book);
+		this.booksRepo.delete(book);
 		return "Book deleted successfully";
 	}
 

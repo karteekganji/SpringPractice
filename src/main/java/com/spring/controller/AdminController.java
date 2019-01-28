@@ -74,7 +74,7 @@ public class AdminController {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.libraryService.addBook(bean));
 	}
 
-	@PostMapping("/delete-book/{Id}")
+	@DeleteMapping("/delete-book/{Id}")
 	public GeneralResponse deleteBook(@RequestBody BooksBean bean,
 			@RequestHeader("Auth-Token") final String authToken) {
 		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.libraryService.deleteBook(bean));
