@@ -1,11 +1,11 @@
 package com.spring.services;
 
-import static org.mockito.Mockito.doNothing;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.persistence.EntityManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +16,7 @@ import com.spring.beans.Library.BooksSubBean;
 import com.spring.beans.Library.CategoryBean;
 import com.spring.beans.Library.LibraryBean;
 import com.spring.beans.Library.LibraryInfoBean;
+import com.spring.beans.Library.PageRequestBean;
 import com.spring.beans.Library.PublisherBean;
 import com.spring.enums.Role;
 import com.spring.model.library.AppUser;
@@ -42,27 +43,29 @@ import com.spring.utils.PracticeUtils;
 public class LibraryService {
 
 	@Autowired
-	LibraryRepo libraryRepo;
+	private LibraryRepo libraryRepo;
 	@Autowired
-	CityRepo cityRepo;
+	private CityRepo cityRepo;
 	@Autowired
-	BooksRepo booksRepo;
+	private BooksRepo booksRepo;
 	@Autowired
-	CategoryRepo categoryRepo;
+	private CategoryRepo categoryRepo;
 	@Autowired
-	LanguageRepo languageRepo;
+	private LanguageRepo languageRepo;
 	@Autowired
-	PublisherRepo publisherRepo;
+	private PublisherRepo publisherRepo;
 	@Autowired
-	LibraryInfoRepo libraryInfoRepo;
+	private LibraryInfoRepo libraryInfoRepo;
 	@Autowired
-	AuthorRepo authorRepo;
+	private AuthorRepo authorRepo;
 	@Autowired
-	AppUserRepo appUserRepo;
+	private AppUserRepo appUserRepo;
 	
 	@Autowired
-	UserService userService; 
-
+	private UserService userService; 
+	@Autowired
+	private EntityManager entityManager;
+	
 	public Library addLibrary(LibraryBean bean) {
 		Library library;
 		if (bean.getId() != null) {
@@ -165,8 +168,26 @@ public class LibraryService {
 		return bookInfos(books);
 	}
 
-	public List<BooksBean> getAllBooks() {
+	public List<BooksBean> getAllBooks(String xAuth /*, PageRequestBean bean*/) {
+		AppUser user = userService.getLoggedInAppUser(xAuth);
 		List<Books> books = this.booksRepo.findAll();
+		
+		/*CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+
+		CriteriaQuery<Books> criteriaQuery = builder.createQuery(Books.class);
+		Root<Books> customerRoot = criteriaQuery.from(Books.class);
+		this.applyFiltersForIndividualCustomer(builder, criteriaQuery, customerRoot, bean, user, false);
+		TypedQuery<Books> customQuery = entityManager.createQuery(criteriaQuery);
+		customQuery.setFirstResult(bean.getStart());
+		customQuery.setMaxResults(bean.getNumberOfRecords());
+
+		CriteriaQuery<Long> countCriteriaQuery = builder.createQuery(Long.class);
+		Root<Books> countRoot = countCriteriaQuery.from(Books.class);
+		countCriteriaQuery.select(builder.count(countRoot));
+		this.applyFiltersForIndividualCustomer(builder, countCriteriaQuery, countRoot, bean, user, true);
+		Long totalRecords = entityManager.createQuery(countCriteriaQuery).getSingleResult();*/
+		
+		
 		books.sort((a, b) -> a.getId().compareTo(b.getId()));
 		List<BooksBean> beans = new ArrayList<>();
 		for (Books books2 : books) {

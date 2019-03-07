@@ -14,23 +14,28 @@ public class GeneralResponse {
 	private Object payLoad;
 
 	private String errorMessage;
-	
+
 	private Exception exception;
 
-	public GeneralResponse(final String status) {
+	public GeneralResponse(String status) {
 		this.status = status;
 	}
 
-	public GeneralResponse(final String status, final Object payload) {
+	public GeneralResponse(Object payload) {
+		this.payLoad = payload;
+	}
+
+	public GeneralResponse(String status, Object payload) {
 		this.status = status;
 		this.payLoad = payload;
 	}
 
-	public GeneralResponse(final String status, final String errorMessage) {
+	public GeneralResponse(String status, String errorMessage) {
 		this.status = status;
 		this.errorMessage = errorMessage;
 	}
-	public GeneralResponse(final String status, final Exception errorMessage) {
+
+	public GeneralResponse(String status, Exception errorMessage) {
 		this.status = status;
 		this.exception = errorMessage;
 	}

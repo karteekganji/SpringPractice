@@ -2,7 +2,6 @@ package com.spring.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,15 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spring.beans.Library.AppUserBean;
-import com.spring.beans.Library.BooksBean;
-import com.spring.beans.Library.CategoryBean;
-import com.spring.beans.Library.CityBean;
-import com.spring.beans.Library.LanguageBean;
-import com.spring.beans.Library.LibraryBean;
-import com.spring.beans.Library.LibraryInfoBean;
-import com.spring.beans.Library.PublisherBean;
+import com.spring.beans.Library.PageRequestBean;
 import com.spring.beans.Library.UserActivityBean;
-import com.spring.model.library.AppUser;
 import com.spring.services.LibraryService;
 import com.spring.services.UserService;
 import com.spring.utils.Constants;
@@ -100,8 +92,8 @@ public class LibraryController {
 	}
 
 	@GetMapping("/get-all-books")
-	public GeneralResponse getAllBooks(@RequestHeader("Auth-Token") final String authToken) {
-		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.libraryService.getAllBooks());
+	public GeneralResponse getAllBooks(/*@RequestBody PageRequestBean bean,*/ @RequestHeader("Auth-Token") final String authToken) {
+		return new GeneralResponse(Constants.RESPONSE_SUCCESS, this.libraryService.getAllBooks(authToken));
 	}
 
 	@GetMapping("/search-books")
