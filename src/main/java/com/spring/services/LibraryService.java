@@ -263,10 +263,10 @@ public class LibraryService {
 		return publisher;
 	}
 
-	public String deleteBook(BooksBean bean) {
-		Assert.isNull(bean.getBookId(), "Provide Id");
-		Books book = this.booksRepo.findOne(bean.getBookId());
-		Assert.notNull(bean.getBookId(), "No Book found");
+	public String deleteBook(Long Id) {
+		Assert.notNull(Id, "Provide Id");
+		Books book = this.booksRepo.findOne(Id);
+		Assert.notNull(book, "No Book found");
 		this.booksRepo.delete(book);
 		return "Book deleted successfully";
 	}

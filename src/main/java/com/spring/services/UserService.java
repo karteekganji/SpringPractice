@@ -346,7 +346,7 @@ public class UserService {
 		List<AuthorBean> authorBeans = new ArrayList<>(); 
 		for (Author author : authors) {
 			AuthorBean authorBean = new AuthorBean();
-			authorBean.setId(author.getAppUser().getId());
+			authorBean.setId(author.getId());
 			authorBean.setName(author.getAppUser().getName());
 			authorBeans.add(authorBean);
 		}
