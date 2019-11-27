@@ -26,7 +26,7 @@ public class Swagger {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("Practice Springboot API Documentation")
+                .title("Library Project API Documentation")
                 .description("Here you can find all the APIs")
                 .build();
     }
