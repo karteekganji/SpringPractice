@@ -254,6 +254,7 @@ public class LibraryService {
 		Publisher publisher;
 		if (bean.getId() != null) {
 			publisher = this.publisherRepo.findOne(bean.getId());
+			Assert.notNull(publisher, "No Publisher found with given Id");
 		} else {
 			publisher = new Publisher();
 		}

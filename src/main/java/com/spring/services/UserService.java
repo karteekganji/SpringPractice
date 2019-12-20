@@ -197,7 +197,7 @@ public class UserService {
 	public String logout(String authToken){
 		Assert.notNull(authToken,"No user selected");
 		AppUser appUser = this.userRepo.findByAuth(authToken);
-		Assert.notNull(appUser, "Already User Logouted");
+		Assert.notNull(appUser, "Already user logouted");
 		appUser.setAuth(null);
 		this.userRepo.save(appUser);
 		return "Logged out Successfull";
@@ -249,6 +249,7 @@ public class UserService {
 		City city;
 		if (bean.getCityId() != null) {
 			city = this.cityRepo.findOne(bean.getCityId());
+			Assert.notNull(city, "City not found with given Id");
 		} else {
 			city = new City();
 		}
