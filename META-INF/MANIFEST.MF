@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: SpringPractice
+Bundle-SymbolicName: SpringPractice
+Bundle-Version: 1.0.0.qualifier
+Export-Package: com.spring,
+ com.spring.beans.Library,
+ com.spring.controller,
+ com.spring.enums,
+ com.spring.model.library,
+ com.spring.repo.Library,
+ com.spring.security,
+ com.spring.services,
+ com.spring.utils

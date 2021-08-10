@@ -14,7 +14,7 @@ public class PracticeUtils {
 	private AppUserRepo appUserRepo;
 	
 	public static boolean isNotEmpty(Object object) {
-		if (object == null) { 
+		if (object == null || object == "") { 
 			return false;
 		}
 		return true;

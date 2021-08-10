@@ -154,10 +154,13 @@ public class UserService {
 					"Entered mobile number is already registered.");
 			user.setPassword(PracticeUtils.encryptPassword(bean.getPassword()));
 		}
+		
+		Assert.isTrue(PracticeUtils.isNotEmpty(bean.getMobileNumber()), "Enter a mobile number");
 		user.setName(bean.getName());
 		user.setEmail(bean.getEmail());
 		user.setMobileNumber(bean.getMobileNumber());
 		City city = this.cityRepo.findByCityName(bean.getCityName());
+		System.out.println(bean.getCityName());
 		if (PracticeUtils.isNotEmpty(city)) {
 			user.setCity(city.getCityName());
 		} else {
